@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'core',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -59,7 +60,7 @@ WSGI_APPLICATION = 'sistemaDeNotas.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sistema-notas',
+        'NAME': 'sistemanotas',
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': '127.0.0.1',

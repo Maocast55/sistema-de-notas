@@ -45,7 +45,6 @@ class Seccion(models.Model):
         verbose_name = 'Sección'
         verbose_name_plural = 'Secciones'
 
-
 class Materia(models.Model):
     nombre = models.CharField(max_length=64, verbose_name='Nombre')
     seccion = models.ForeignKey(Seccion, verbose_name='Sección')

@@ -1,31 +1,18 @@
+{% extends 'base_login.html' %}
+{% load bootstrap3 %} {% bootstrap_css %} {% bootstrap_javascript %}
 
-{% load staticfiles %}
-<html>
-    <head>
-	    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
-        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-        {% load bootstrap3 %} {% bootstrap_css %} {% bootstrap_javascript %}
-    </head>
-    <body style="overflow:hidden;">
-        <div class="col-md-12" id="header-login">
-
-        </div>
-
+{% block login_content %}
         <div id="wrapper">
             <form class="form-signin" method="POST" action="">
-                {% csrf_token%}
-                {% bootstrap_form_errors form%}
+                {% csrf_token %}
+                {% bootstrap_form_errors form %}
                 <div id="form-signin-heading">Iniciar sesión</div>
                 <label>Ingrese su nombre de usuario</label>
                 <input type="text" class="form-control" name="username" placeholder="ej: juancarlos" required=""/><br>
                 <label>Ingrese su contraseña</label>
                 <input type="password" class="form-control" name="password" placeholder="ej: *******" required=""/><br>
-              <button class="btn btn-lg btn-success btn-block" type="submit">Iniciar sesión</button>
+              <button class="btn btn-lg btn-success btn-block" type="submit">Iniciar sesión</button><br>
+                <p><a class="pull-right" href="{% url 'reset_password' %}">Olvidé mi contraseña</a></p>
             </form>
-		</div>
-
-        <div class="col-md-12" id="footer-page">
-            <span>Desarrollado por Colegio Florentino Ameghino | 2015</span>
         </div>
-    </body>
-</html>
+{% endblock %}

@@ -5,11 +5,20 @@
 	    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
         <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
         <link rel="stylesheet" href="{% static 'css/font-awesome/css/font-awesome.min.css' %}">
+        <link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
         {% load bootstrap3 %} {% bootstrap_css %} {% bootstrap_javascript %}
     </head>
     <body style="overflow:hidden;">
         <div class="col-md-12" id="header-login">
-
+            <div id="logo" class="col-md-6	">
+				<img src="{{STATIC_URL}}images/logo.png" width=250px>
+			</div>
+			<div id="colegio" class="col-md-6">
+				<div class= "div1.1">
+				<h1 class="nombreColegio">Colegio Florentino Ameghino</h1>
+				</div>
+				<div class= "div1.2"> <img  id="sistemaDeNotas" src= "{{STATIC_URL}}images/sistema.png"> </div>
+			</div>
         </div>
 
             {% block login_content %}

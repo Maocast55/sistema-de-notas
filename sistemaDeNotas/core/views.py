@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.views.generic import View
 from django.shortcuts import redirect
-from core.forms import LoginForm
+from core.forms import LoginForm, ChangePasswordForm
 from core.models import User
 from django.contrib.auth import login, authenticate, logout
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
 class LoginView(View):
 
@@ -17,24 +19,46 @@ class LoginView(View):
     def post(self, request):
         form = LoginForm(request.POST)
         if form.is_valid():
-            user = authenticate(username=User.objects.get(username= request.POST['username']), password=User.objects.get(username= request.POST['password']))
+            user = authenticate(username=User.objects.get(username= request.POST['username']), password=request.POST['password'])
             login(request, user)
             return redirect('materias_de_docente')
         else:
             return render(request, 'login.html', {'form': form})
 
+class DocenteChangePasswordView(View):
+
+    @method_decorator(login_required)
+    def get(self, request):
+        form = ChangePasswordForm()
+        return render(request, 'change_password.html', {'form': form})
+
+    @method_decorator(login_required)
+    def post(self, request):
+        form = ChangePasswordForm(request.POST)
+        if form.is_valid():
+            new_password = request.POST['password_1']
+            user_logged = User.objects.get(username=request.user.username)
+            user_logged.set_password(new_password)
+            user_logged.save()
+            return redirect('login')
+        else:
+            return render(request, 'change_password.html', {'form': form})
+
 class DocenteResetPasswordView(View):
 
-    def get(selfs, request):
+    @method_decorator(login_required)
+    def get(self, request):
         return render(request, 'reset_password.html')
 
 class DocenteMateriasView(View):
 
+    @method_decorator(login_required)
     def get(self, request):
         import pdb;pdb.set_trace()
 
 class LogOutView(View):
 
+    @method_decorator(login_required)
     def get(self, request):
         logout(request)
         return redirect('login')

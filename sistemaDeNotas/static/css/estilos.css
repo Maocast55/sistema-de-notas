@@ -6,6 +6,7 @@
     border-bottom-width: 1px;
     border-bottom-color: black;
     position: absolute;
+    width:100%;
     top: 0px;
     left: 0px;
 }
@@ -21,6 +22,7 @@
     padding-top: 5px;
     padding-bottom: 5px;
     color: white;
+    width: 100%;
     text-align: center;
 }
 
@@ -54,25 +56,4 @@
 .nombreColegio {
 	font: 350% sans-serif;
 	font-family:'Yanone Kaffeesatz', sans-serif;
-	padding-left: 30%;
-	padding-bottom: 0%;
-
-}
-
-.colegio {
-	padding-left: 95%;
-	padding-bottom: 50%;
-}
-
-.div1.1 {
-padding-left: 30%;
-}
-
-.div1.2 {
-padding-left:75%;
-}
-
-#sistemaDeNotas {
-padding-left: 75%; por es
-
 }

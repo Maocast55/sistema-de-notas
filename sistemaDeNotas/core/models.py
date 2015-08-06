@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 
 
 class GrupoExamen(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     nombre = models.CharField(max_length=64, verbose_name='Nombre')
 
     def __unicode__(self):
@@ -17,6 +19,8 @@ class GrupoExamen(models.Model):
 
 
 class TipoExamen(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     codigo = models.CharField(max_length=64, verbose_name='Código')
     descripcion = models.TextField(max_length=128, verbose_name='Descripción')
     nivel = models.PositiveSmallIntegerField(verbose_name='Nivel')
@@ -31,6 +35,8 @@ class TipoExamen(models.Model):
 
 
 class Seccion(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     anio = models.PositiveSmallIntegerField(verbose_name='Año')
     cursada = models.CharField(max_length=64, verbose_name='Cursada')
     grupo = models.CharField(max_length=64, verbose_name='Grupo', null=True, blank=True)
@@ -46,6 +52,8 @@ class Seccion(models.Model):
         verbose_name_plural = 'Secciones'
 
 class Materia(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     nombre = models.CharField(max_length=64, verbose_name='Nombre')
     seccion = models.ForeignKey(Seccion, verbose_name='Sección')
     usuarios = models.ManyToManyField(User, 'Responsable')  # pueden ser docentes, preceptores o administradores.
@@ -59,6 +67,8 @@ class Materia(models.Model):
 
 
 class Examen(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     nombre = models.CharField(max_length=64, verbose_name='Nombre')
     fecha = models.DateField()
     observacion = models.TextField(max_length=512)
@@ -73,6 +83,10 @@ class Examen(models.Model):
         verbose_name_plural = 'Exámenes'
 
 class Alumno(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     primer_nombre = models.CharField(max_length=64, verbose_name='Primer nombre')
     segundo_nombre = models.CharField(max_length=64, verbose_name='Segundo nombre', default='')
     apellido = models.CharField(max_length=64, verbose_name='Apellido')
@@ -86,6 +100,8 @@ class Alumno(models.Model):
         verbose_name_plural = 'Alumnos'
 
 class Inscripcion(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     fecha_alta = models.DateField(verbose_name='Fecha alta')        # fecha en la que se inicia la inscripción
     fecha_hasta = models.DateField(verbose_name='Fecha hasta', null=True, blank=True)      # el alumno se cambió de sección o finalizó el ciclo lectivo
     fecha_baja = models.DateField(verbose_name='Fecha baja', null=True, blank=True)        # el alumno se fue del colegio
@@ -99,3 +115,16 @@ class Inscripcion(models.Model):
     class Meta:
         verbose_name = 'Inscripción'
         verbose_name_plural = 'Inscripciones'
+
+class Institucion(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    nombre = models.CharField(max_length=64, verbose_name='Nombre de la institución')
+
+    def __unicode__(self):
+        return self.nombre
+
+
+    class Meta:
+        verbose_name = 'Institución'
+        verbose_name_plural = 'Institución'

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.shortcuts import redirect
 from core.forms import LoginForm, ChangePasswordForm
-from core.models import User
+from core.models import User, Institucion
 from django.contrib.auth import login, authenticate, logout
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -14,7 +14,12 @@ class LoginView(View):
             return redirect('materias_de_docente')
         else:
             form = LoginForm()
-            return render(request, 'login.html', {'form': form})
+            institucion = Institucion.objects.all()
+            if institucion:
+                nombre_institucion = institucion[0].nombre
+            else:
+                nombre_institucion = "Nombre a completar"
+            return render(request, 'login.html', {'form': form, 'nombre_institucion': nombre_institucion})
 
     def post(self, request):
         form = LoginForm(request.POST)

@@ -1,0 +1,44 @@
+{% load bootstrap3 %} {% bootstrap_css %} {% bootstrap_javascript %}
+<head>
+    <link rel="stylesheet" href="{{STATIC_URL}}css/estilos.css">
+</head>
+<div class="contenido col-md-12">
+    <h1><u>Mis cursos</u></h1>
+
+<div class="col-md-8 col-md-offset-2">
+    <table class="table-bordered table">
+        <thead>
+            <tr style="text-align:center;font-weight:bold;">
+                <td rowspan="2" class="header-tabla" style="">Asignatura</td>
+                <td rowspan="2" class="header-tabla" >Año</td>
+                <td colspan="3">Estado</td>
+                <td rowspan="2" class="header-tabla">Acciones</td>
+            </tr>
+            <tr>
+            <td>1ro</td>
+            <td>2do</td>
+            <td>3ro</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Lengua</td>
+                <td>2do</td>
+                <td>ok</td>
+                <td>ok</td>
+                <td>ok</td>
+                <td><button type="button" class="btn btn-primary">Acceder al curso</button> </td>
+            </tr>
+            <tr>
+                <td>Matemática</td>
+                <td>3do</td>
+                <td>ok</td>
+                <td>fail</td>
+                <td>ok</td>
+                <td><button type="button" class="btn btn-primary">Acceder al curso</button> </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</div>

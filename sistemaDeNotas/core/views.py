@@ -57,9 +57,13 @@ class DocenteResetPasswordView(View):
 
 class DocenteMateriasView(View):
 
-    @method_decorator(login_required)
     def get(self, request):
-        import pdb;pdb.set_trace()
+        institucion = Institucion.objects.all()
+        if institucion:
+            nombre_institucion = institucion[0].nombre
+        else:
+            nombre_institucion = "Nombre a completar"
+        return render(request, 'materias.html', {'nombre_institucion': nombre_institucion})
 
 class LogOutView(View):
 

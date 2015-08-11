@@ -1,7 +1,6 @@
-
 #header-login{
     background-color: #1D87B1;
-    height: 150px;
+    height: 100px;
     border-bottom-style: solid;
     border-bottom-width: 1px;
     border-bottom-color: black;
@@ -52,28 +51,69 @@
 }
 
 .nombreColegio {
-	font: 350% sans-serif;
+	font: 100% sans-serif;
 	font-family:'Yanone Kaffeesatz', sans-serif;
+	padding-left: 30%;
+	padding-bottom: 0%;
+    
+}
+.avatar{
+
+ position: absolute; 
+  top: 0px; 
+  right: 5px; /*Pixeles a la izquierda de su posición natural*/
 }
 
-.header-tabla{
-    padding-top:30px;
 }
 
-.colegio {
-	padding-left: 95%;
-	padding-bottom: 50%;
+.usuario {
 
+	font: 30% sans-serif;
+	font-family:'Yanone Kaffeesatz', sans-serif;
+	padding-left: 30%;
+	padding-bottom: 0%;
+    
 }
 
-.div1.1 {
-padding-left: 30%;
+/* estilo del banner */
+
+*{
+  margin: 0px;
+  padding: 0px;
 }
 
-.div1.2 {
-padding-left:75%;
+
+header{
+  background-color: #1D87B1;
+  border: 1px solid #000000;
 }
 
-#sistemaDeNotas {
-padding-left: 75%;
+nav{
+  background-color: black;
+  float:bottom;
+    clear:both;
 }
+
+#notas{
+  float: right;
+}
+
+#titulo{
+  
+  padding-left: 10%;
+}
+
+#img-sistema-de{
+  float: right;
+}
+
+#texto{
+  font-family: 'Yanone Kaffeesatz', sans-serif;
+  color: black;
+  font-size: 45px;
+}
+
+#subtexto{
+  font-family: cursive;
+}
+

@@ -14,11 +14,7 @@ class LoginView(View):
             return redirect('materias_de_docente')
         else:
             form = LoginForm()
-            institucion = Institucion.objects.all()
-            if institucion:
-                nombre_institucion = institucion[0].nombre
-            else:
-                nombre_institucion = "Nombre a completar"
+            nombre_institucion = get_institucion_name()
             return render(request, 'login.html', {'form': form, 'nombre_institucion': nombre_institucion})
 
     def post(self, request):
@@ -57,13 +53,10 @@ class DocenteResetPasswordView(View):
 
 class DocenteMateriasView(View):
 
+    @method_decorator(login_required)
     def get(self, request):
-        institucion = Institucion.objects.all()
-        if institucion:
-            nombre_institucion = institucion[0].nombre
-        else:
-            nombre_institucion = "Nombre a completar"
-        return render(request, 'materias.html', {'nombre_institucion': nombre_institucion})
+        nombre_institucion = get_institucion_name()
+        return render(request, 'materias.html', {'nombre_institucion': nombre_institucion, 'user': request.user})
 
 class LogOutView(View):
 
@@ -75,3 +68,12 @@ class LogOutView(View):
 class ProfesorView(View):
     def get(self, request):
        return render(request, 'pantalla_profesor.html')
+
+
+def get_institucion_name():
+    institucion = Institucion.objects.all()
+    if institucion:
+        nombre_institucion = institucion[0].nombre
+    else:
+        nombre_institucion = "Nombre a completar"
+    return nombre_institucion

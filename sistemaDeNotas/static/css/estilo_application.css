@@ -122,3 +122,7 @@ nav{
   font-family: cursive;
 }
 
+table tr:hover {
+  background-color: #58ACFA;
+  cursor: pointer;
+}

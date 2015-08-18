@@ -1,10 +1,128 @@
-<!DOCTYPE html>
-<html lang="en">
+{% load bootstrap3 %} {% bootstrap_css %} {% bootstrap_javascript %}
 <head>
-    <meta charset="UTF-8">
-    <title></title>
+    <link rel="stylesheet" href="{{STATIC_URL}}css/estilo_application.css">
+    <link rel="stylesheet" href="{{STATIC_URL}}css/font-awesome/css/font-awesome.min.css">
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
+
+        {% load bootstrap3 %} {% bootstrap_css %} {% bootstrap_javascript %}
 </head>
-<body>
-asd
-</body>
-</html>
+
+ 
+    
+<div class="contenido col-md-8">
+    <h1> Notas </h1>
+
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#">Primer Trimestre</a></li>
+  <li><a href="#">Segundo Trimestre</a></li>
+  <li><a href="#">Tercer Trimestre</a></li>
+  <li> <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+      Opciones <span class="caret"></span> 
+      </a> 
+      <ul class="dropdown-menu">
+       <li><a href="#"><span class="text-success">Terminar edicion</span></a></li>
+       <li><a href="#"><span class="text-warning">Cerrar Trimestre</span></a></li>
+       <li><a href="#"><span class="text-info">Guardar y volver</span></a></li>
+       <li><a href="#"><span class="text-danger">No guardar y volver</a></span></li>
+
+    </ul>
+    </li>
+</ul>
+
+
+<div class="col-md-10 col-md-offset-1">
+  <table class="table">
+        <thead>
+            <tr style="font-weight:bold;">
+                <td rowspan="2" class="header-tabla" >Nombre</td>
+                <td rowspan="2" class="header-tabla" >Apellido</td>
+                <td rowspan="2" class="header-tabla">Nota</td>
+                <td rowspan="2" class="header-tabla">Nota</td>
+                <td rowspan="2" class="header-tabla">Nota</td>
+
+                <td><button type="button" class="btn btn-primary">Agregar columna</button> </td>
+            </tr>
+           
+        </thead>
+        <tbody>
+            <tr>
+                <td>Juan</td>
+                <td>Perez</td>
+                <td> 7 </td>
+                <td> 8</td>
+                <td> 10 </td>
+                
+            </tr>
+            <tr>
+                <td>Pedro</td>
+                <td>Rodriguez</td>
+                <td>5</td>
+                <td>8</td>
+                <td>2</td>
+                
+            </tr>
+            <tr>
+                <td>Marta</td>
+                <td>Lopez</td>
+                <td>8</td>
+                <td>7</td>
+                <td>9</td>
+                
+            </tr>
+            <tr>
+                <td>Marta</td>
+                <td>Lopez</td>
+                <td>8</td>
+                <td>7</td>
+                <td>9</td>
+                
+            </tr>
+            <tr>
+                <td>Marta</td>
+                <td>Lopez</td>
+                <td>8</td>
+                <td>7</td>
+                <td>9</td>
+                
+            </tr>
+            <tr>
+                <td>Marta</td>
+                <td>Lopez</td>
+                <td>8</td>
+                <td>7</td>
+                <td>9</td>
+                
+            </tr>
+            <tr>
+                <td>Marta</td>
+                <td>Lopez</td>
+                <td>8</td>
+                <td>7</td>
+                <td>9</td>
+                
+            </tr>
+            <tr>
+                <td>Marta</td>
+                <td>Lopez</td>
+                <td>8</td>
+                <td>7</td>
+                <td>9</td>
+                
+            </tr>
+            <tr>
+                <td>Marta</td>
+                <td>Lopez</td>
+                <td>8</td>
+                <td>7</td>
+                <td>9</td>
+                
+            </tr>
+        </tbody>
+    </table>
+
+
+</div>
+    
+
+ 

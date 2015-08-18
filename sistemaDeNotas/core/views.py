@@ -69,6 +69,9 @@ class ProfesorView(View):
     def get(self, request):
        return render(request, 'pantalla_profesor.html')
 
+class CursosView(View):
+    def get(self, request):
+        return render(request, 'pantalla_cursos.html')
 
 def get_institucion_name():
     institucion = Institucion.objects.all()

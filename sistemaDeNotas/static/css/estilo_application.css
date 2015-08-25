@@ -127,3 +127,31 @@ table tr:hover {
   cursor: pointer;
 }
 
+#filtro{
+  
+  width: 24%;
+  margin-bottom: 10px;
+
+}
+
+#achicarDiv{
+  font-family: 'Yanone Kaffeesatz', sans-serif;
+  font-size: 27px;
+  float:left; 
+  width: 20%;
+
+}
+
+#achicarCampo{
+
+width: 20%;
+margin-bottom: 10px;
+font-size: 30px;
+
+}
+
+#tipografiaFiltroAlumno{
+font-family: 'Yanone Kaffeesatz', sans-serif;
+font-size: 27px;
+
+}

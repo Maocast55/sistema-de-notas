@@ -47,7 +47,6 @@ class DocenteChangePasswordView(View):
 
 class DocenteResetPasswordView(View):
 
-    @method_decorator(login_required)
     def get(self, request):
         return render(request, 'reset_password.html')
 

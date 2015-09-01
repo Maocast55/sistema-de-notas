@@ -7,6 +7,11 @@ from django.contrib.auth import login, authenticate, logout
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
+class ManualView(View):
+
+    def get(self, request):
+        return render(request, 'manual.html')
+
 class LoginView(View):
 
     def get(self, request):

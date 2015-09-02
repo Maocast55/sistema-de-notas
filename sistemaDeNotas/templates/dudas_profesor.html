@@ -1,0 +1,111 @@
+
+{% load staticfiles %}
+<html>
+    <head>
+        <link rel="stylesheet" href="{% static 'css/estilo_application.css' %}">
+        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        <link rel="stylesheet" href="{% static 'css/font-awesome/css/font-awesome.min.css' %}">
+        <link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
+        {% load bootstrap3 %} {% bootstrap_css %} {% bootstrap_javascript %}
+    </head> <!--esto es el banner GRANDE-->
+    <body style="overflow:hidden;">
+       <div id="agrupar">
+        <header class="col-md-12" id="header-page">
+            <div class="col-sm-3">
+                <img src="{{STATIC_URL}}images/logo.png" width=125px height="70px">
+            </div>
+            <div class="col-sm-9 hidden-xs">
+                <div class="col-sm-8">
+                    <div class="pull-right" id="nombreColegio"><h1>{{nombre_institucion}}</h1></div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="pull-right" id="logonotas_app"><img src= "{{STATIC_URL}}images/sistema.png"></div>
+                </div>
+            </div>
+        </header> <!--BANNER GRANDE-->
+
+ <div id="bajarDiv" class="col-md-12"> <!--imagen del doctor y cajas de preguntas-->
+
+        <div id="doctor1" class="col-md-4">
+            <img src="{{STATIC_URL}}images/doctor2.jpg" width=400px height="400px">
+        </div>
+
+        <div id="cajas" class="col-md-8"> <!--cajas de preguntas-->
+
+            <!--primer caja-->
+             <div class="col-md-8">
+                    <button class="btn btn-primary btn-lg dropdown-toggle"
+                             type="button" data-toggle="dropdown">
+                             ¿Como veo las materias donde trabajo? <span class="caret"></span>
+                    </button>
+ 
+                    <ul class="dropdown-menu">
+                        Escribir respuesta.
+                    </ul>
+            </div>
+
+            <!--segunda caja-->
+            <div class="col-md-8" >
+                <button class="btn btn-info btn-lg dropdown-toggle"
+                        type="button" data-toggle="dropdown">
+                        ¿Como visualizar las notas de los alumnos de mi materia? <span class="caret"></span>
+                </button>
+ 
+                <ul class="dropdown-menu">
+                        Escribir respuesta.
+                </ul>
+            </div>
+
+            <!--tercer caja-->
+            <div class="col-md-8">
+                <button class="btn btn-primary btn-lg dropdown-toggle"
+                        type="button" data-toggle="dropdown">
+                        ¿Como cargar la nota de un alumno? <span class="caret"></span>
+                </button>
+ 
+                <ul class="dropdown-menu">
+                        Escribir respuesta.
+                </ul>
+            </div>
+
+            <!--cuarta caja-->
+            <div id="pregunta4" class="col-md-8">
+                <button class="btn btn-info btn-lg dropdown-toggle"
+                        type="button" data-toggle="dropdown" >
+                        ¿Como edito una nota? <span class="caret"></span>
+                </button>
+ 
+                <ul class="dropdown-menu">
+                        Escribir respuesta.
+                </ul>
+            </div>
+            
+            <!--quinta pregunta-->
+            <div class="col-md-8">
+                <button class="btn btn-primary btn-lg dropdown-toggle"
+                        type="button" data-toggle="dropdown">
+                        ¿Como cerrar un trimestre? <span class="caret"></span>
+                </button>
+ 
+                <ul class="dropdown-menu">
+                        Escribir respuesta.
+                </ul>
+            </div>
+
+
+
+        </div>
+        
+        
+ </div>   
+
+    </div>
+            {% block login_content %}
+
+            {% endblock %}
+
+        <div class="col-md-12" id="footer-page">
+            <span>Desarrollado por Colegio Florentino Ameghino | 2015</span>
+        </div>
+    </body>
+</html>

@@ -43,9 +43,9 @@ class Seccion(models.Model):
 
     def __unicode__(self):
         if self.grupo:
-            return  self.grupo + self.cursada + ' ' + str(self.anio)
+            return  self.cursada + self.grupo + ' ' + str(self.anio)
         else:
-            return str(self.anio) + self.cursada
+            return self.cursada + str(self.anio)
 
     class Meta:
         verbose_name = 'Sección'
@@ -120,6 +120,12 @@ class Institucion(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     nombre = models.CharField(max_length=64, verbose_name='Nombre de la institución')
+
+    # Fechas de finalización de los trimestres en esa institución
+    inicio_de_clases = models.DateField(verbose_name='Fecha de inicio de clases')
+    primer_trimestre = models.DateField(verbose_name='Fecha de cierre de notas del primer trimestre')
+    segundo_trimestre = models.DateField(verbose_name='Fecha de cierre de notas del segundo trimestre')
+    tercer_trimestre = models.DateField(verbose_name='Fecha de cierre de notas del tercer trimestre')
 
     def __unicode__(self):
         return self.nombre

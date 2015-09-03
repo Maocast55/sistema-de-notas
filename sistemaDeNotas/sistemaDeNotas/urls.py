@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from core.views import LoginView, DocenteResetPasswordView, DocenteMateriasView, LogOutView, DocenteChangePasswordView, ProfesorView, CursosView
+from core.views import LoginView, DocenteResetPasswordView, DocenteMateriasView, LogOutView, DocenteChangePasswordView, CursosView
 
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
@@ -9,7 +9,6 @@ urlpatterns = patterns('',
     url(r'^reset_password', DocenteResetPasswordView.as_view(), name='reset_password'),
     url(r'^change_password', DocenteChangePasswordView.as_view(), name='change_password'),
     url(r'^materias', DocenteMateriasView.as_view(), name='materias_de_docente'),
-    url(r'^profesor', ProfesorView.as_view(), name='profesor'),
     url(r'^cursos', CursosView.as_view(), name='cursos'),
 
 )

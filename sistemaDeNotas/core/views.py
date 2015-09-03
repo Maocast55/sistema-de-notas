@@ -1,11 +1,103 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from django.shortcuts import render
 from django.views.generic import View
 from django.shortcuts import redirect
 from core.forms import LoginForm, ChangePasswordForm
-from core.models import User, Institucion
+from core.models import User, Institucion, Materia
 from django.contrib.auth import login, authenticate, logout
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from datetime import date
+
+# Filtros para usar en los templates
+from django.template.defaulttags import register
+
+
+@register.filter
+def get_estado_de_trimestre(materia, args):
+    '''
+    'Clave' puede ser '1' (si se quieren obtener el estado de un trimestre)
+    o '2' (si se quiere obtener si el botón debe estar habilitado)
+    '''
+    arg_list = [arg.strip() for arg in args.split(',')]
+    trimestre = arg_list[0]
+    clave = arg_list[1]
+
+    institucion = Institucion.objects.all()[0]
+
+    # Estados de los trimestres = Clase bootstrap que va a mostrarse
+    estado_primer_trimestre = None
+    estado_segundo_trimestre = None
+    estado_tercer_trimestre = None
+
+    # Habilitado trimestre = Booleano que indica si tiene que estar habilitada la visibilidad de la materia
+    habilitao_primer_trimestre = None
+    habilitado_segundo_trimestre = None
+    habilitado_tercer_trimestre = None
+
+    if institucion.inicio_de_clases > date.today():
+        # Aún no iniciaron las clases
+        estado_primer_trimestre = 'fa fa-clock-o'
+        estado_segundo_trimestre = 'fa fa-clock-o'
+        estado_tercer_trimestre = 'fa fa-clock-o'
+        habilitao_primer_trimestre = False
+        habilitado_segundo_trimestre = False
+        habilitado_tercer_trimestre = False
+
+    elif institucion.inicio_de_clases < date.today() and date.today() < institucion.primer_trimestre:
+        # El primer trimestre está en curso
+        estado_primer_trimestre = calcular_estado_de_materia(materia, trimestre)
+        estado_segundo_trimestre = 'fa fa-clock-o'
+        estado_tercer_trimestre = 'fa fa-clock-o'
+        habilitao_primer_trimestre = True
+        habilitado_segundo_trimestre = False
+        habilitado_tercer_trimestre = False
+
+    elif institucion.primer_trimestre < date.today() and date.today() < institucion.segundo_trimestre:
+        # El segundo trimestre está en curso
+        estado_primer_trimestre = calcular_estado_de_materia(materia, trimestre)
+        estado_segundo_trimestre = calcular_estado_de_materia(materia, trimestre)
+        estado_tercer_trimestre = 'fa fa-clock-o'
+        habilitao_primer_trimestre = False
+        habilitado_segundo_trimestre = True
+        habilitado_tercer_trimestre = False
+
+    elif institucion.segundo_trimestre < date.today() and date.today() < institucion.tercer_trimestre:
+        # El tercer trimestre está en curso
+        estado_primer_trimestre = calcular_estado_de_materia(materia, trimestre)
+        estado_segundo_trimestre = calcular_estado_de_materia(materia, trimestre)
+        estado_tercer_trimestre = calcular_estado_de_materia(materia, trimestre)
+        habilitao_primer_trimestre = False
+        habilitado_segundo_trimestre = False
+        habilitado_tercer_trimestre = True
+
+    else:
+        # El ciclo lectivo culminó
+        estado_primer_trimestre = calcular_estado_de_materia(materia, trimestre)
+        estado_segundo_trimestre = calcular_estado_de_materia(materia, trimestre)
+        estado_tercer_trimestre = calcular_estado_de_materia(materia, trimestre)
+        habilitao_primer_trimestre = False
+        habilitado_segundo_trimestre = False
+        habilitado_tercer_trimestre = False
+
+    estados = { '1':{'1':estado_primer_trimestre,'2':estado_segundo_trimestre,'3':estado_tercer_trimestre},
+                '2':{'1':habilitao_primer_trimestre, '2':habilitado_segundo_trimestre, '3':habilitado_tercer_trimestre}
+              }
+    return estados[str(clave)][str(trimestre)]
+
+# --------- fin de filtros --------------
+
+
+# Funciones helpers
+
+def calcular_estado_de_materia(materia, trimestre):
+    return 'fa fa-check'
+
+# ----------- fin funciones helpers -------------
+
+
 
 class LoginView(View):
 
@@ -54,8 +146,8 @@ class DocenteMateriasView(View):
 
     @method_decorator(login_required)
     def get(self, request):
-        nombre_institucion = get_institucion_name()
-        return render(request, 'materias.html', {'nombre_institucion': nombre_institucion, 'user': request.user})
+        materias = Materia.objects.filter(usuarios__id=request.user.id)
+        return render(request, 'materias.html', {'nombre_institucion': get_institucion_name(), 'user': request.user, 'materias': materias})
 
 class LogOutView(View):
 
@@ -64,9 +156,6 @@ class LogOutView(View):
         logout(request)
         return redirect('login')
 
-class ProfesorView(View):
-    def get(self, request):
-       return render(request, 'pantalla_profesor.html')
 
 class CursosView(View):
     def get(self, request):

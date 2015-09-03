@@ -99,6 +99,18 @@ def calcular_estado_de_materia(materia, trimestre):
 
 
 
+class ManualView(View):
+
+    def get(self, request):
+        return render(request, 'manual.html')
+
+
+class Dudas_profesorView(View):
+
+    def get(self, request):
+        return render(request, 'dudas_profesor.html')
+
+
 class LoginView(View):
 
     def get(self, request):

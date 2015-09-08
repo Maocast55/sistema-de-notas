@@ -18,8 +18,11 @@ from django.template.defaulttags import register
 @register.filter
 def get_estado_de_trimestre(materia, args):
     '''
-    'Clave' puede ser '1' (si se quieren obtener el estado de un trimestre)
+    :param materia: Una materia
+    :param args: 'Clave' ==> puede ser '1' (si se quieren obtener el estado de un trimestre)
     o '2' (si se quiere obtener si el botón debe estar habilitado)
+    'Trimestre' ==> Puede ser 1,2 o 3.
+    :return: Diccionario (en '1' están los estados de los trimestres. En '2' dice si que botones se habilitan de accesos)
     '''
     arg_list = [arg.strip() for arg in args.split(',')]
     trimestre = arg_list[0]
@@ -92,7 +95,13 @@ def get_estado_de_trimestre(materia, args):
 
 # Funciones helpers
 
+
 def calcular_estado_de_materia(materia, trimestre):
+    '''
+    :param materia: Una materia
+    :param trimestre: 1,2 o 3
+    :return: Chequea si están cargadas todas las notas de esa materia para ese trimestre y según corresponda retorna check o fail.
+    '''
     return 'fa fa-check'
 
 # ----------- fin funciones helpers -------------

@@ -5,35 +5,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class GrupoExamen(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-    nombre = models.CharField(max_length=64, verbose_name='Nombre')
-
-    def __unicode__(self):
-        return self.nombre
-
-    class Meta:
-        verbose_name = 'Grupo de examen'
-        verbose_name_plural = 'Grupos de examen'
-
-
-class TipoExamen(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-    codigo = models.CharField(max_length=64, verbose_name='Código')
-    descripcion = models.TextField(max_length=128, verbose_name='Descripción')
-    nivel = models.PositiveSmallIntegerField(verbose_name='Nivel')
-    grupo_examen = models.ForeignKey(GrupoExamen, verbose_name='Grupo examen')
-
-    def __unicode__(self):
-        return self.descripcion
-
-    class Meta:
-        verbose_name = "Tipo de examen"
-        verbose_name_plural = "Tipos de examen"
-
-
 class Seccion(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -72,7 +43,6 @@ class Examen(models.Model):
     nombre = models.CharField(max_length=64, verbose_name='Nombre')
     fecha = models.DateField()
     observacion = models.TextField(max_length=512)
-    grupo_examen = models.ForeignKey(GrupoExamen, verbose_name='Grupo examen')
     materia = models.ForeignKey(Materia, verbose_name='Materia')
 
     def __unicode__(self):
@@ -83,8 +53,6 @@ class Examen(models.Model):
         verbose_name_plural = 'Exámenes'
 
 class Alumno(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     primer_nombre = models.CharField(max_length=64, verbose_name='Primer nombre')
@@ -98,6 +66,21 @@ class Alumno(models.Model):
     class Meta:
         verbose_name = 'Alumno'
         verbose_name_plural = 'Alumnos'
+
+class ExamenAlumno(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    alumno = models.ForeignKey(Alumno, verbose_name='Alumno')
+    examen = models.ForeignKey(Examen, verbose_name='Examen')
+    nota = models.IntegerField(verbose_name='Nota')
+
+    def __unicode__(self):
+        return self.alumno + '|' + self.examen + '|' + self.nota
+
+    class Meta:
+        verbose_name = 'Nota de alumno'
+        verbose_name_plural = 'Nota de alumno'
+
 
 class Inscripcion(models.Model):
     created = models.DateTimeField(auto_now_add=True)

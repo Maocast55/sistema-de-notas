@@ -2,20 +2,16 @@
 {% load bootstrap3 %} {% bootstrap_css %} {% bootstrap_javascript %}
 
 
-{% block id_header %}header-page{% endblock %}
+{% block id_header %}header-page-green{% endblock %}
 
 {% block contenido_ayuda %}
  <div id="bajarDiv" class="col-md-12"> <!--imagen del doctor y cajas de preguntas-->
 
-        <div id="doctor1" class="col-md-4">
-            <img src="{{STATIC_URL}}images/doctor2.jpg" width=400px height="400px">
-        </div>
-
         <div id="cajas" class="col-md-8"> <!--cajas de preguntas-->
 
-              {% for pregunta in preguntas%}
+        {% for pregunta in preguntas%}
              <div class="col-md-8">
-                    <button class="btn btn-lg dropdown-toggle btn-primary"
+                    <button class="btn btn-lg dropdown-toggle color_verdeOscuro"
                              type="button" data-toggle="dropdown">
                              {{pregunta.titulo}}<span class="caret"></span>
                     </button>
@@ -25,16 +21,16 @@
                     </ul>
             </div>
             {% endfor %}
-             
-           
+
 
         </div>
         
-        
+        <div id="doctor1" class="col-md-4">
+            <img src="{{STATIC_URL}}images/administrador.jpg" width=400px height="400px">
+        </div>
+
+
  </div>   
-
-    </div>
-
 {% endblock %}
-            
-{% block id_footer %}footer-page{% endblock %}
+
+{% block id_footer %}footer-page-green{% endblock %}

@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.shortcuts import redirect
 from core.forms import LoginForm, ChangePasswordForm
-from core.models import User, Institucion, Materia
+from core.models import User, Institucion, Materia, Preguntas_Administrador, Preguntas_Profesor, Preguntas_Frecuentes
 from django.contrib.auth import login, authenticate, logout
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -117,7 +117,22 @@ class ManualView(View):
 class Dudas_profesorView(View):
 
     def get(self, request):
-        return render(request, 'dudas_profesor.html')
+        preguntas = Preguntas_Profesor.objects.all()
+        return render(request, 'dudas_profesor.html', {'preguntas': preguntas})
+
+
+class Dudas_administradorView(View):
+
+    def get(self, request):
+        preguntas = Preguntas_Administrador.objects.all()
+        return render(request, 'dudas_administrador.html', {'preguntas' : preguntas})
+
+
+class Preguntas_frecuentesView(View):
+
+    def get(self, request):
+        preguntas = Preguntas_Frecuentes.objects.all()
+        return render(request, 'preguntas_frecuentes.html', {'preguntas': preguntas})
 
 
 class LoginView(View):

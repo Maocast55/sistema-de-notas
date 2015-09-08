@@ -4,6 +4,45 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class Preguntas_Administrador(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    titulo = models.CharField(max_length="255")
+    respuesta = models.TextField(max_length="4096")
+
+    def __unicode__(self):
+        return self.titulo
+
+    class Meta:
+        verbose_name = 'Pregunta_Administrador'
+        verbose_name_plural = 'Preguntas_Administradores'
+
+class Preguntas_Frecuentes(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    titulo = models.CharField(max_length="255")
+    respuesta = models.TextField(max_length="4096")
+
+    def __unicode__(self):
+        return self.titulo
+
+    class Meta:
+        verbose_name = 'Pregunta_Frecuente'
+        verbose_name_plural = 'Preguntas_Frecuentes'
+
+class Preguntas_Profesor(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    titulo = models.CharField(max_length="255")
+    respuesta = models.TextField(max_length="4096")
+
+    def __unicode__(self):
+        return self.titulo
+
+    class Meta:
+        verbose_name = 'Pregunta_Profesor'
+        verbose_name_plural = 'Preguntas_Profesores'
+
 
 class Seccion(models.Model):
     created = models.DateTimeField(auto_now_add=True)

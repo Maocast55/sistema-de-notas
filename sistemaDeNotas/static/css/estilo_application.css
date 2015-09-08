@@ -182,13 +182,82 @@ font-size: 50px;
 float:left;
 }
 
-#pregunta4{
-  style=padding-top20px;
-}
 
 #doctor1{
 margin-bottom: 100px;
 font-size: 50px;
 float:left;
 
+}
+
+.color_verdeOscuro{
+  background-color:#2A7C0A
+}
+
+.color_verdeClaro{
+  background-color:#6FAE75
+}
+
+.color_rojoOscuro{
+  background-color:#C92929
+}
+
+.color_rojoClaro{
+  background-color:#FA6666
+}
+
+#footer-page-red{
+    background-color: #E13D3D;
+    height: 30px;
+    width: 100%;
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-top-color: black;
+    position: fixed;
+    bottom: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    color: white;
+    text-align: center;
+}
+
+#header-page-red{
+    background-color: #970303;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: black;
+    position: absolute;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+}
+
+.espacio{
+  padding-top:10px;
+}
+
+#header-page-green{
+    background-color: #0B7312;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: black;
+    position: absolute;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+}
+
+#footer-page-green{
+    background-color: #88C08C;
+    height: 30px;
+    width: 100%;
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-top-color: black;
+    position: fixed;
+    bottom: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    color: white;
+    text-align: center;
 }

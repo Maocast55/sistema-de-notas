@@ -14,6 +14,9 @@ from datetime import date
 # Filtros para usar en los templates
 from django.template.defaulttags import register
 
+@register.filter
+def esPar(numero):
+    return numero % 2 == 0
 
 @register.filter
 def get_estado_de_trimestre(materia, args):

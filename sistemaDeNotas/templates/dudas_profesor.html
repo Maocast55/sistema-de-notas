@@ -14,16 +14,33 @@
         <div id="cajas" class="col-md-8"> <!--cajas de preguntas-->
 
               {% for pregunta in preguntas%}
-             <div class="col-md-8">
-                    <button class="btn btn-lg dropdown-toggle btn-primary"
+                  {% if forloop.counter|esPar %}
+                         <div class="col-md-8" style="padding-top:10;">
+                              <button class="btn btn-lg dropdown-toggle btn-primary"
                              type="button" data-toggle="dropdown">
                              {{pregunta.titulo}}<span class="caret"></span>
-                    </button>
+                            </button>
  
-                    <ul class="dropdown-menu">
-                        {{pregunta.respuesta}}
-                    </ul>
-            </div>
+                            <ul class="dropdown-menu">
+                               {{pregunta.respuesta}}
+                            </ul>
+                         </div>
+                  {%else%}
+                        <div class="col-md-8" style="padding-top:10;">
+                                  <button class="btn btn-lg dropdown-toggle btn-info"
+                                          type="button" data-toggle="dropdown">
+                                          {{pregunta.titulo}}<span class="caret"></span>
+                                  </button>
+ 
+                                   <ul class="dropdown-menu">
+                                     {{pregunta.respuesta}}
+                                  </ul>
+                        </div>
+
+
+
+
+                  {%endif%}
             {% endfor %}
              
            

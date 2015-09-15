@@ -5,11 +5,13 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.shortcuts import redirect
 from core.forms import LoginForm, ChangePasswordForm
-from core.models import User, Institucion, Materia, Preguntas_Administrador, Preguntas_Profesor, Preguntas_Frecuentes
+from core.models import User, Inscripcion, Institucion, Materia, Preguntas_Administrador, Preguntas_Profesor, Preguntas_Frecuentes
 from django.contrib.auth import login, authenticate, logout
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from datetime import date
+from models import Examen,ExamenAlumno
+
 
 # Filtros para usar en los templates
 from django.template.defaulttags import register
@@ -105,7 +107,14 @@ def calcular_estado_de_materia(materia, trimestre):
     :param trimestre: 1,2 o 3
     :return: Chequea si están cargadas todas las notas de esa materia para ese trimestre y según corresponda retorna check o fail.
     '''
-    return 'fa fa-check'
+    #CARGAR MAS EXAMENES DE LENGUA PARA TESTEAR
+    #import pdb;pdb.set_trace()
+    cantidad_de_examenes = len(Examen.objects.filter(materia=materia, trimestre=trimestre))
+    cantidad_de_notas = len(ExamenAlumno.objects.filter(examen__materia=materia, examen__trimestre=trimestre ))
+    if cantidad_de_examenes >= 3 and cantidad_de_notas == len(Inscripcion.objects.filter(seccion=materia.seccion)) * cantidad_de_examenes:
+        return 'fa fa-check'
+    else:
+        return 'fa fa-close'
 
 # ----------- fin funciones helpers -------------
 

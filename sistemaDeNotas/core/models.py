@@ -83,9 +83,10 @@ class Examen(models.Model):
     fecha = models.DateField()
     observacion = models.TextField(max_length=512)
     materia = models.ForeignKey(Materia, verbose_name='Materia')
+    trimestre = models.IntegerField()
 
     def __unicode__(self):
-        return self.nombre
+        return self.nombre + str(self.trimestre)
 
     class Meta:
         verbose_name = 'Examen'
@@ -106,6 +107,7 @@ class Alumno(models.Model):
         verbose_name = 'Alumno'
         verbose_name_plural = 'Alumnos'
 
+
 class ExamenAlumno(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -114,7 +116,7 @@ class ExamenAlumno(models.Model):
     nota = models.IntegerField(verbose_name='Nota')
 
     def __unicode__(self):
-        return self.alumno + '|' + self.examen + '|' + self.nota
+        return str(self.nota) +' ' + str(self.alumno.primer_nombre) + ' '+str(self.examen.materia)
 
     class Meta:
         verbose_name = 'Nota de alumno'

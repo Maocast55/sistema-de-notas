@@ -183,11 +183,10 @@ float:left;
 }
 
 
-#doctor1{
-margin-bottom: 100px;
-font-size: 50px;
-float:left;
-
+#esquineroVerde{
+position:absolute;
+top:-128;
+margin-left:1010px;
 }
 
 .color_verdeOscuro{

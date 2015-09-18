@@ -12,7 +12,15 @@
                 <label>Ingrese su contraseña</label>
                 <input type="password" class="form-control" name="password" placeholder="ej: *******" required=""/><br>
               <button class="btn btn-lg btn-success btn-block" type="submit">Iniciar sesión</button><br>
-                <p><a class="pull-right" href="{% url 'reset_password' %}">Olvidé mi contraseña</a></p>
+                <button type="button" class="btn btn-info">Olvide mi contraseña</button>
+                <a href="manual"> <button type="button" style="margin-left: 70px" class="btn btn-info">Manual</button> </a>
             </form>
+
+                <div style="padding-top: 50;" class="col-md-8">
+                    <img src="{{STATIC_URL}}images/consulta2.png" width=200px height="200px">
+                </div>
         </div>
 {% endblock %}
+
+
+ 

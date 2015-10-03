@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.shortcuts import redirect
 from core.forms import LoginForm, ChangePasswordForm
-from core.models import User, Inscripcion, Institucion, Materia, Preguntas_Administrador, Preguntas_Profesor, Preguntas_Frecuentes
+from core.models import *
 from django.contrib.auth import login, authenticate, logout
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -19,6 +19,13 @@ from django.template.defaulttags import register
 @register.filter
 def esPar(numero):
     return numero % 2 == 0
+
+@register.filter
+def get_notas_de(examenes, alumno):
+    notas = []
+    for examen, alumnos in examenes.iteritems():
+        notas.append(alumnos[alumno])
+    return notas
 
 @register.filter
 def get_estado_de_trimestre(materia, args):
@@ -206,9 +213,36 @@ class LogOutView(View):
 
 
 class CursosView(View):
-    def get(self, request):
-        return render(request, 'pantalla_cursos.html')
+    def get(self, request, *args, **kwargs):
+        # obtengo la materia que se quiere visualizar
+        materia = Materia.objects.filter(pk=kwargs['materia_pk'])[0]
 
+        # obtengo los examenes para esa materia (en todos los trimestres por ahora)
+        examenes = Examen.objects.filter(materia= materia)
+
+        # obtengo las inscripciones para la seccion a la que pertenece la materia
+        inscripciones = Inscripcion.objects.filter(seccion=materia.seccion)
+
+        # obtengo todos los examenes para esta materia
+        examenes = Examen.objects.filter(materia=materia)
+
+        # este diccionario debe contener todos los examenes y en cada examen un diccionario que sea
+        # alumno:nota (deben estar todos los alumnos)
+        dict_examenes = {}
+
+        for examen in examenes:
+            dict_alumnos = {}
+            for inscripcion in inscripciones:
+                dict_alumnos[inscripcion.alumno] = get_nota_si_existe(ExamenAlumno.objects.filter(examen=examen, alumno=inscripcion.alumno))
+                dict_examenes[examen] = dict_alumnos
+        return render(request, 'pantalla_cursos.html', {'examenes':dict_examenes, 'alumnos':map(lambda a : a.alumno, inscripciones)})
+
+# Recive una lista y si tiene la nota la retorna, sino retorna None
+def get_nota_si_existe(lista):
+    if(len(lista) > 0):
+        return lista[0]
+    else:
+        return None
 def get_institucion_name():
     institucion = Institucion.objects.all()
     if institucion:

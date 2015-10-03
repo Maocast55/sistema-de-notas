@@ -53,9 +53,9 @@ class Seccion(models.Model):
 
     def __unicode__(self):
         if self.grupo:
-            return  self.cursada + self.grupo + ' ' + str(self.anio)
+            return  str(self.anio) + self.cursada + ' grupo ' + self.grupo
         else:
-            return self.cursada + str(self.anio)
+            return str(self.anio) + self.cursada
 
     class Meta:
         verbose_name = 'Sección'
@@ -69,7 +69,7 @@ class Materia(models.Model):
     usuarios = models.ManyToManyField(User, 'Responsable')  # pueden ser docentes, preceptores o administradores.
 
     def __unicode__(self):
-        return self.nombre
+        return self.nombre + " | " + str(self.seccion)
 
     class Meta:
         verbose_name = 'Materia'
@@ -86,7 +86,7 @@ class Examen(models.Model):
     trimestre = models.IntegerField()
 
     def __unicode__(self):
-        return self.nombre + str(self.trimestre)
+        return str(self.materia) + ' ' + str(self.nombre) + ' ' + str(self.trimestre)
 
     class Meta:
         verbose_name = 'Examen'
@@ -96,7 +96,7 @@ class Alumno(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     primer_nombre = models.CharField(max_length=64, verbose_name='Primer nombre')
-    segundo_nombre = models.CharField(max_length=64, verbose_name='Segundo nombre', default='')
+    segundo_nombre = models.CharField(max_length=64, verbose_name='Segundo nombre', blank=True, null= True)
     apellido = models.CharField(max_length=64, verbose_name='Apellido')
     dni = models.CharField(max_length=64, verbose_name='dni')
 
@@ -116,7 +116,7 @@ class ExamenAlumno(models.Model):
     nota = models.IntegerField(verbose_name='Nota')
 
     def __unicode__(self):
-        return str(self.nota) +' ' + str(self.alumno.primer_nombre) + ' '+str(self.examen.materia)
+        return str(self.nota) + ' ' + str(self.alumno.primer_nombre) + ' '+str(self.examen.materia)
 
     class Meta:
         verbose_name = 'Nota de alumno'
@@ -133,7 +133,7 @@ class Inscripcion(models.Model):
     alumno = models.ForeignKey(Alumno, verbose_name='Alumno')
 
     def __unicode__(self):
-        return str(self.seccion) + ' | ' + str(self.alumno)
+        return str(self.seccion) + ' | ' + str(self.alumno.dni)
 
 
     class Meta:

@@ -224,7 +224,7 @@ class CursosView(View):
         inscripciones = Inscripcion.objects.filter(seccion=materia.seccion)
 
         # obtengo todos los examenes para esta materia
-        examenes = Examen.objects.filter(materia=materia)
+        examenes = Examen.objects.filter(materia=materia, trimestre=kwargs['trimestre'])
 
         # este diccionario debe contener todos los examenes y en cada examen un diccionario que sea
         # alumno:nota (deben estar todos los alumnos)
@@ -233,16 +233,32 @@ class CursosView(View):
         for examen in examenes:
             dict_alumnos = {}
             for inscripcion in inscripciones:
-                dict_alumnos[inscripcion.alumno] = get_nota_si_existe(ExamenAlumno.objects.filter(examen=examen, alumno=inscripcion.alumno))
+                dict_alumnos[inscripcion.alumno] = get_or_create_nota(ExamenAlumno.objects.filter(examen=examen, alumno=inscripcion.alumno), examen, inscripcion.alumno)
                 dict_examenes[examen] = dict_alumnos
         return render(request, 'pantalla_cursos.html', {'examenes':dict_examenes, 'alumnos':map(lambda a : a.alumno, inscripciones)})
 
-# Recive una lista y si tiene la nota la retorna, sino retorna None
-def get_nota_si_existe(lista):
+class ExamenesAlumnoView(View):
+    def post(self, request):
+        examenes_alumno = request.POST['examenes_alumno'].split(',')
+        notas = request.POST['notas'].split(',')
+        for index, examen_pk in enumerate(examenes_alumno):
+            examen_alumno = ExamenAlumno.objects.get(pk=examen_pk)
+            nota = notas[index]
+            if nota == '' or nota == ' ' or nota == '  ' or int(nota) < 0 or int(nota) > 10:
+                examen_alumno.nota = None
+            else:
+                examen_alumno.nota = nota
+            examen_alumno.save()
+        return redirect('login')
+
+# Recibe una lista, si ésta contiene un elemento lo retorna, de lo contrario crea un nuevo examen_alumno con los datos que recibe.
+def get_or_create_nota(lista, examen, alumno):
     if(len(lista) > 0):
         return lista[0]
     else:
-        return None
+        examen_alumno = ExamenAlumno.objects.create(examen=examen, alumno=alumno, nota=None)
+        return examen_alumno
+
 def get_institucion_name():
     institucion = Institucion.objects.all()
     if institucion:

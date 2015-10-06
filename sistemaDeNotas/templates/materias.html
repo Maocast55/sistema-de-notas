@@ -27,13 +27,13 @@
                     <td style="text-align:center;"><i class="{{materia|get_estado_de_trimestre:'2,1'}}"></i></td>
                     <td style="text-align:center;"><i class="{{materia|get_estado_de_trimestre:'3,1'}}"></i></td>
                     {% if materia|get_estado_de_trimestre:'1,2' %}
-                    <td style="text-align:center;"><a href="{% url 'cursos' materia.pk%}" type="button" class="btn btn-primary">Acceder al curso</a> </td>
+                    <td style="text-align:center;"><a href="{% url 'cursos' materia.pk 1 %}" type="button" class="btn btn-primary">Acceder al curso</a> </td>
                     {% endif %}
                     {% if materia|get_estado_de_trimestre:'2,2'%}
-                    <td style="text-align:center;"><a href="" type="button" class="btn btn-primary">Acceder al curso</a> </td>
+                    <td style="text-align:center;"><a href="{% url 'cursos' materia.pk 2 %}" type="button" class="btn btn-primary">Acceder al curso</a> </td>
                     {% endif %}
                     {% if materia|get_estado_de_trimestre:'3,2'%}
-                    <td style="text-align:center;"><a href="" type="button" class="btn btn-primary">Acceder al curso</a> </td>
+                    <td style="text-align:center;"><a href="{% url 'cursos' materia.pk 3 %}" type="button" class="btn btn-primary">Acceder al curso</a> </td>
                     {% endif %}
                 </tr>
                 {% endfor %}

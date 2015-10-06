@@ -2,6 +2,61 @@
 {% load bootstrap3 %} {% bootstrap_css %} {% bootstrap_javascript %}
 
 {% block login_content %}
+<script>
+    submitForms = function(){
+
+        /////////////////// NOTAS DE LOS ALUMNOS ////////////////////////////
+        /////////////////////////////////////////////////////////////////////
+
+        // obtengo los forms con las notas de los alumnos
+        forms = document.getElementsByClassName("form-nota");
+
+        // genero dos inputs: el primero contiene las pk de los examen_alumno y el segundo ls notas de los mismos.
+        var examenes_alumno = document.createElement("input");
+        examenes_alumno.type = "hidden";
+        examenes_alumno.name = "examenes_alumno";
+        var lista_examenes_alumno = [];
+
+        var notas = document.createElement("input");
+        notas.type = "hidden";
+        notas.name = "notas";
+        var lista_notas = [];
+
+        // para saber si todos los forms son validos
+        var forms_validos = true;
+
+        Array.prototype.forEach.call(forms, function(form) {
+            lista_examenes_alumno.push(form['examen_alumno'].value);
+            lista_notas.push(form['nota'].value);
+            form_valido = (form['nota'].value >= 0 && form['nota'].value <= 10);
+            forms_validos = forms_validos && form_valido;
+            if(!form_valido){
+                form['nota'].style.backgroundColor = '#DF4D4D';
+            }
+            else{
+                form['nota'].style.backgroundColor = 'white';
+            }
+        });
+
+        ////////////////// SUBMIT DEL FORMUMARIO PRINCIPAL /////////////
+        ////////////////////////////////////////////////////////////////
+
+        if(forms_validos){
+            examenes_alumno.value = lista_examenes_alumno;
+            notas.value = lista_notas;
+            // agrego los inputs al form y hago submit
+            var form = document.getElementById("form-principal");
+            form.appendChild(examenes_alumno);
+            form.appendChild(notas);
+            form.submit();
+        }
+        else{
+            alert("Notas negativas o mayores a 10, revise por favor.")
+        }
+
+    }
+</script>
+
 <div class="contenido col-md-12">
     <h1> Notas </h1>
 
@@ -31,7 +86,9 @@
                     <td rowspan="2" class="header-tabla" >Nombre</td>
                     <td rowspan="2" class="header-tabla" >Apellido</td>
                     {% for examen, alumnos in examenes.items %}
-                        <td rowspan="2" class="header-tabla">{{examen}}</td>
+                        <td rowspan="2" class="header-tabla">
+                            {{examen.nombre}}
+                        </td>
                     {% endfor %}
                     <td><button type="button" class="btn btn-primary">Agregar columna</button> </td>
                 </tr>
@@ -43,16 +100,32 @@
                         <td>{{alumno.primer_nombre}}</td>
                         <td>{{alumno.apellido}}</td>
                             {% for nota in examenes|get_notas_de:alumno %}
-                                <td>{{nota}}</td>
+                                <td>
+                                    <form class="form-nota" action="/examen_alumno/" method="post">
+                                        {% csrf_token %}
+                                        {% if nota.nota %}
+                                            <input name="nota" type="int" value="{{nota.nota}}" maxlength="2"/>
+                                        {% else %}
+                                            <input name="nota" type="int" value="" maxlength="2"/>
+                                        {% endif %}
+                                        <input name="examen_alumno" type="int" value="{{nota.pk}}" hidden="hidden"/>
+                                    </form>
+                                </td>
                             {% endfor %}
                     </tr>
                 {% endfor %}
             </tbody>
-        </table>
 
+          <input type="button" value="GUARDAR" onclick="submitForms()" />
+
+          <!-- Formulario que se submitea al enviar todas las notas -->
+            <form id="form-principal" action="/examenes_alumno/" method="post">
+                {% csrf_token %}
+            </form>
+
+        </table>
 
     </div>
 </div>
 
 {% endblock %}
- 

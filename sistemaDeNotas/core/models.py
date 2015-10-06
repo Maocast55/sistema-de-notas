@@ -113,7 +113,7 @@ class ExamenAlumno(models.Model):
     updated = models.DateTimeField(auto_now=True)
     alumno = models.ForeignKey(Alumno, verbose_name='Alumno')
     examen = models.ForeignKey(Examen, verbose_name='Examen')
-    nota = models.IntegerField(verbose_name='Nota')
+    nota = models.IntegerField(verbose_name='Nota', null=True)
 
     def __unicode__(self):
         return str(self.nota) + ' ' + str(self.alumno.primer_nombre) + ' '+str(self.examen.materia)

@@ -4,6 +4,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
+
 class Preguntas_Administrador(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -81,7 +85,7 @@ class Examen(models.Model):
     updated = models.DateTimeField(auto_now=True)
     nombre = models.CharField(max_length=64, verbose_name='Nombre')
     fecha = models.DateField()
-    observacion = models.TextField(max_length=512)
+    observacion = models.TextField(max_length=512, null=True, blank=True)
     materia = models.ForeignKey(Materia, verbose_name='Materia')
     trimestre = models.IntegerField()
 

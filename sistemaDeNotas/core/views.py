@@ -117,7 +117,7 @@ def calcular_estado_de_materia(materia, trimestre):
     #CARGAR MAS EXAMENES DE LENGUA PARA TESTEAR
     #import pdb;pdb.set_trace()
     cantidad_de_examenes = len(Examen.objects.filter(materia=materia, trimestre=trimestre))
-    cantidad_de_notas = len(ExamenAlumno.objects.filter(examen__materia=materia, examen__trimestre=trimestre ))
+    cantidad_de_notas = len(ExamenAlumno.objects.filter(examen__materia=materia, examen__trimestre=trimestre ).exclude(nota=None))
     if cantidad_de_examenes >= 3 and cantidad_de_notas == len(Inscripcion.objects.filter(seccion=materia.seccion)) * cantidad_de_examenes:
         return 'fa fa-check'
     else:

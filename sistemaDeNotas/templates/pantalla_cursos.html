@@ -88,6 +88,11 @@
                     {% for examen, alumnos in examenes.items %}
                         <td rowspan="2" class="header-tabla">
                             {{examen.nombre}}
+                            <form action="/examen/borrar" method="post">
+                                {% csrf_token %}
+                                <input name="examen_pk" type="number" hidden="hidden" value={{examen.pk}}>
+                                <button type="submit"><i class="fa fa-close" style="color:red;"></i></button>
+                            </form>
                         </td>
                     {% endfor %}
                     <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Agregar columna</button> </td>

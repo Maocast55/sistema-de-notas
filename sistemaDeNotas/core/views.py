@@ -140,10 +140,16 @@ def materia_correcta_en_trimestre(materia, trimestre):
 
 # ----------- fin funciones helpers -------------
 
+class ExamenBorrarView(View):
+
+    def post(self, request):
+        examen = Examen.objects.get(pk=request.POST['examen_pk'])
+        examen.delete()
+        return redirect('/cursos/' + str(examen.materia.pk) + '/' + str(examen.trimestre))
+
 class ExamenNuevoView(View):
 
     def post(self, request):
-        import pdb;pdb.set_trace()
         materia_pk = request.POST['materia']
         trimestre = request.POST['trimestre']
         nombre = request.POST['nombre']

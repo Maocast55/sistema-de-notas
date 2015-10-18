@@ -109,23 +109,48 @@ def get_estado_de_trimestre(materia, args):
 
 
 def calcular_estado_de_materia(materia, trimestre):
-    '''
-    :param materia: Una materia
-    :param trimestre: 1,2 o 3
-    :return: Chequea si están cargadas todas las notas de esa materia para ese trimestre y según corresponda retorna check o fail.
-    '''
-    #CARGAR MAS EXAMENES DE LENGUA PARA TESTEAR
-    #import pdb;pdb.set_trace()
-    cantidad_de_examenes = len(Examen.objects.filter(materia=materia, trimestre=trimestre))
-    cantidad_de_notas = len(ExamenAlumno.objects.filter(examen__materia=materia, examen__trimestre=trimestre ).exclude(nota=None))
-    if cantidad_de_examenes >= 3 and cantidad_de_notas == len(Inscripcion.objects.filter(seccion=materia.seccion)) * cantidad_de_examenes:
+    if materia_correcta_en_trimestre(materia, trimestre):
         return 'fa fa-check'
     else:
         return 'fa fa-close'
 
+def materia_correcta_en_trimestre(materia, trimestre):
+    '''
+    :param materia: Una materia
+    :param trimestre: 1,2 o 3
+    :return: Retorna un booleano que expresa si todos los alumnos de la materia
+    en el trimestre especificado tienen cargadas al menos 3 notas.
+    '''
+
+    # Obtengo todos los examens para la materia en el trimestre especificado.
+    examenes = len(Examen.objects.filter(materia=materia, trimestre=trimestre))
+
+    # Obtengo todos los alumnos inscriptos a la materia en cuestión.
+    alumnos_inscriptos = map(lambda i: i.alumno, Inscripcion.objects.filter(seccion=materia.seccion))
+
+    materia_correcta = True
+
+    for alumno in alumnos_inscriptos:
+        if materia_correcta:
+            cantidad_de_notas_del_alumno = ExamenAlumno.objects.filter(alumno=alumno, examen__materia=materia, examen__trimestre=trimestre).exclude(nota=None)
+            materia_correcta = materia_correcta and len(cantidad_de_notas_del_alumno) >= 3
+        else:
+            return False
+    return materia_correcta
+
 # ----------- fin funciones helpers -------------
 
+class ExamenNuevoView(View):
 
+    def post(self, request):
+        import pdb;pdb.set_trace()
+        materia_pk = request.POST['materia']
+        trimestre = request.POST['trimestre']
+        nombre = request.POST['nombre']
+        observacion = request.POST['observacion']
+        fecha = request.POST['fecha']
+        examen = Examen.objects.create(nombre=nombre, materia=Materia.objects.get(pk=materia_pk), trimestre=trimestre, observacion=observacion, fecha=fecha)
+        return redirect('/cursos/' + materia_pk + '/' + trimestre)
 
 class ManualView(View):
 
@@ -214,6 +239,9 @@ class LogOutView(View):
 
 class CursosView(View):
     def get(self, request, *args, **kwargs):
+
+        trimestre = kwargs['trimestre']
+
         # obtengo la materia que se quiere visualizar
         materia = Materia.objects.filter(pk=kwargs['materia_pk'])[0]
 
@@ -224,7 +252,7 @@ class CursosView(View):
         inscripciones = Inscripcion.objects.filter(seccion=materia.seccion)
 
         # obtengo todos los examenes para esta materia
-        examenes = Examen.objects.filter(materia=materia, trimestre=kwargs['trimestre'])
+        examenes = Examen.objects.filter(materia=materia, trimestre=trimestre)
 
         # este diccionario debe contener todos los examenes y en cada examen un diccionario que sea
         # alumno:nota (deben estar todos los alumnos)
@@ -235,7 +263,12 @@ class CursosView(View):
             for inscripcion in inscripciones:
                 dict_alumnos[inscripcion.alumno] = get_or_create_nota(ExamenAlumno.objects.filter(examen=examen, alumno=inscripcion.alumno), examen, inscripcion.alumno)
                 dict_examenes[examen] = dict_alumnos
-        return render(request, 'pantalla_cursos.html', {'examenes':dict_examenes, 'alumnos':map(lambda a : a.alumno, inscripciones)})
+        return render(request, 'pantalla_cursos.html', {
+                                                        'examenes':dict_examenes,
+                                                        'alumnos':map(lambda a : a.alumno, inscripciones),
+                                                        'materia':materia,
+                                                        'trimestre':trimestre,
+                                                        })
 
 class ExamenesAlumnoView(View):
     def post(self, request):

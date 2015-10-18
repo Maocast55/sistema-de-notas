@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from core.views import ExamenesAlumnoView, LoginView, DocenteResetPasswordView, DocenteMateriasView, Dudas_profesorView, LogOutView,Dudas_administradorView, Preguntas_frecuentesView, DocenteChangePasswordView, ManualView, Dudas_profesorView, CursosView
+from core.views import ExamenNuevoView, ExamenesAlumnoView, LoginView, DocenteResetPasswordView, DocenteMateriasView, Dudas_profesorView, LogOutView,Dudas_administradorView, Preguntas_frecuentesView, DocenteChangePasswordView, ManualView, Dudas_profesorView, CursosView
 
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
@@ -15,4 +15,6 @@ urlpatterns = patterns('',
     url(r'^dudas_administrador', Dudas_administradorView.as_view(), name='dudas_administrador'),
     url(r'^preguntas_frecuentes', Preguntas_frecuentesView.as_view(), name='preguntas_frecuentes'),
     url(r'^examenes_alumno', ExamenesAlumnoView.as_view(), name='examenes_alumno'),
+
+    url(r'^examen/nuevo', ExamenNuevoView.as_view(), name='examen_nuevo'),
 )

@@ -28,6 +28,23 @@ def get_notas_de(examenes, alumno):
     return notas
 
 @register.filter
+def promedio_alumno(alumno, examenes):
+    notas_de_alumno = get_notas_de(examenes, alumno)
+    if len(notas_de_alumno) > 0:
+        materia = notas_de_alumno[0].examen.materia
+        trimestre = notas_de_alumno[0].examen.trimestre
+        examenes_alumno = ExamenAlumno.objects.filter(alumno=alumno, examen__materia=materia, examen__trimestre = trimestre)
+        return round(reduce(lambda x, y : x + y, map(lambda nota: get_nota(nota.nota), examenes_alumno)) / float(len(examenes_alumno)),2)
+    else:
+        return 0
+
+def get_nota(nota):
+    if nota == None:
+        return 0
+    else:
+        return nota
+
+@register.filter
 def get_estado_de_trimestre(materia, args):
     '''
     :param materia: Una materia
@@ -107,6 +124,11 @@ def get_estado_de_trimestre(materia, args):
 
 # Funciones helpers
 
+# suma notas que pueden ser None
+def sumar_notas(x, y):
+    print x
+    print y
+    return 0
 
 def calcular_estado_de_materia(materia, trimestre):
     if materia_correcta_en_trimestre(materia, trimestre):
@@ -319,14 +341,15 @@ class ExamenesAlumnoView(View):
     def post(self, request):
         examenes_alumno = request.POST['examenes_alumno'].split(',')
         notas = request.POST['notas'].split(',')
-        for index, examen_pk in enumerate(examenes_alumno):
-            examen_alumno = ExamenAlumno.objects.get(pk=examen_pk)
-            nota = notas[index]
-            if nota == '' or nota == ' ' or nota == '  ' or int(nota) < 0 or int(nota) > 10:
-                examen_alumno.nota = None
-            else:
-                examen_alumno.nota = nota
-            examen_alumno.save()
+        if(not (len(examenes_alumno) == 1 and examenes_alumno[0] == u'')): # esto pasa cuando no hay examenes cargados
+            for index, examen_pk in enumerate(examenes_alumno):
+                examen_alumno = ExamenAlumno.objects.get(pk=examen_pk)
+                nota = notas[index]
+                if nota == '' or nota == ' ' or nota == '  ' or int(nota) < 0 or int(nota) > 10:
+                    examen_alumno.nota = None
+                else:
+                    examen_alumno.nota = nota
+                examen_alumno.save()
         return redirect('login')
 
 # Recibe una lista, si ésta contiene un elemento lo retorna, de lo contrario crea un nuevo examen_alumno con los datos que recibe.

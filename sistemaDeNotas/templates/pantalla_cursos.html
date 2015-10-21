@@ -100,6 +100,7 @@
                             </form>
                         </td>
                     {% endfor %}
+                    <td>PROMEDIO</td>
                     {% if editable %}
                         <td><button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Nueva nota</button> </td>
                     {% else %}
@@ -136,6 +137,11 @@
                                     </form>
                                 </td>
                             {% endfor %}
+                            {% if alumno|promedio_alumno:examenes >= 7 %}
+                                <td style="color:green;">{{alumno|promedio_alumno:examenes}}</td>
+                            {% else %}
+                                <td style="color:red;">{{alumno|promedio_alumno:examenes}}</td>
+                            {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>

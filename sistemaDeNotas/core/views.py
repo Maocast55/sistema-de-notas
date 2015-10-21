@@ -48,7 +48,7 @@ def get_estado_de_trimestre(materia, args):
     estado_tercer_trimestre = None
 
     # Habilitado trimestre = Booleano que indica si tiene que estar habilitada la visibilidad de la materia
-    habilitao_primer_trimestre = None
+    habilitado_primer_trimestre = None
     habilitado_segundo_trimestre = None
     habilitado_tercer_trimestre = None
 
@@ -57,7 +57,7 @@ def get_estado_de_trimestre(materia, args):
         estado_primer_trimestre = 'fa fa-clock-o'
         estado_segundo_trimestre = 'fa fa-clock-o'
         estado_tercer_trimestre = 'fa fa-clock-o'
-        habilitao_primer_trimestre = False
+        habilitado_primer_trimestre = False
         habilitado_segundo_trimestre = False
         habilitado_tercer_trimestre = False
 
@@ -66,7 +66,7 @@ def get_estado_de_trimestre(materia, args):
         estado_primer_trimestre = calcular_estado_de_materia(materia, trimestre)
         estado_segundo_trimestre = 'fa fa-clock-o'
         estado_tercer_trimestre = 'fa fa-clock-o'
-        habilitao_primer_trimestre = True
+        habilitado_primer_trimestre = True
         habilitado_segundo_trimestre = False
         habilitado_tercer_trimestre = False
 
@@ -75,7 +75,7 @@ def get_estado_de_trimestre(materia, args):
         estado_primer_trimestre = calcular_estado_de_materia(materia, trimestre)
         estado_segundo_trimestre = calcular_estado_de_materia(materia, trimestre)
         estado_tercer_trimestre = 'fa fa-clock-o'
-        habilitao_primer_trimestre = False
+        habilitado_primer_trimestre = False
         habilitado_segundo_trimestre = True
         habilitado_tercer_trimestre = False
 
@@ -84,7 +84,7 @@ def get_estado_de_trimestre(materia, args):
         estado_primer_trimestre = calcular_estado_de_materia(materia, trimestre)
         estado_segundo_trimestre = calcular_estado_de_materia(materia, trimestre)
         estado_tercer_trimestre = calcular_estado_de_materia(materia, trimestre)
-        habilitao_primer_trimestre = False
+        habilitado_primer_trimestre = False
         habilitado_segundo_trimestre = False
         habilitado_tercer_trimestre = True
 
@@ -93,12 +93,12 @@ def get_estado_de_trimestre(materia, args):
         estado_primer_trimestre = calcular_estado_de_materia(materia, trimestre)
         estado_segundo_trimestre = calcular_estado_de_materia(materia, trimestre)
         estado_tercer_trimestre = calcular_estado_de_materia(materia, trimestre)
-        habilitao_primer_trimestre = False
+        habilitado_primer_trimestre = False
         habilitado_segundo_trimestre = False
         habilitado_tercer_trimestre = False
 
     estados = { '1':{'1':estado_primer_trimestre,'2':estado_segundo_trimestre,'3':estado_tercer_trimestre},
-                '2':{'1':habilitao_primer_trimestre, '2':habilitado_segundo_trimestre, '3':habilitado_tercer_trimestre}
+                '2':{'1':habilitado_primer_trimestre, '2':habilitado_segundo_trimestre, '3':habilitado_tercer_trimestre}
               }
     return estados[str(clave)][str(trimestre)]
 
@@ -137,6 +137,42 @@ def materia_correcta_en_trimestre(materia, trimestre):
         else:
             return False
     return materia_correcta
+
+def es_trimestre_editable(trimestre):
+
+    institucion = Institucion.objects.all()[0]
+
+    if institucion.inicio_de_clases > date.today():
+        habilitado_primer_trimestre = False
+        habilitado_segundo_trimestre = False
+        habilitado_tercer_trimestre = False
+
+    elif institucion.inicio_de_clases < date.today() and date.today() < institucion.primer_trimestre:
+        # El primer trimestre está en curso
+        habilitado_primer_trimestre = True
+        habilitado_segundo_trimestre = False
+        habilitado_tercer_trimestre = False
+
+    elif institucion.primer_trimestre < date.today() and date.today() < institucion.segundo_trimestre:
+        # El segundo trimestre está en curso
+        habilitado_primer_trimestre = False
+        habilitado_segundo_trimestre = True
+        habilitado_tercer_trimestre = False
+
+    elif institucion.segundo_trimestre < date.today() and date.today() < institucion.tercer_trimestre:
+        # El tercer trimestre está en curso
+        habilitado_primer_trimestre = False
+        habilitado_segundo_trimestre = False
+        habilitado_tercer_trimestre = True
+
+    else:
+        # El ciclo lectivo culminó
+        habilitado_primer_trimestre = False
+        habilitado_segundo_trimestre = False
+        habilitado_tercer_trimestre = False
+
+    trimestres = [habilitado_primer_trimestre, habilitado_segundo_trimestre, habilitado_tercer_trimestre]
+    return trimestres[int(trimestre)-1]
 
 # ----------- fin funciones helpers -------------
 
@@ -247,7 +283,6 @@ class CursosView(View):
     def get(self, request, *args, **kwargs):
 
         trimestre = kwargs['trimestre']
-
         # obtengo la materia que se quiere visualizar
         materia = Materia.objects.filter(pk=kwargs['materia_pk'])[0]
 
@@ -259,6 +294,9 @@ class CursosView(View):
 
         # obtengo todos los examenes para esta materia
         examenes = Examen.objects.filter(materia=materia, trimestre=trimestre)
+
+        # Que el trimestre sea editable depende de la fecha actual.
+        editable = es_trimestre_editable(trimestre)
 
         # este diccionario debe contener todos los examenes y en cada examen un diccionario que sea
         # alumno:nota (deben estar todos los alumnos)
@@ -274,6 +312,7 @@ class CursosView(View):
                                                         'alumnos':map(lambda a : a.alumno, inscripciones),
                                                         'materia':materia,
                                                         'trimestre':trimestre,
+                                                        'editable':editable,
                                                         })
 
 class ExamenesAlumnoView(View):

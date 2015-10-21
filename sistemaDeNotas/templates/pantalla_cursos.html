@@ -58,22 +58,19 @@
 </script>
 
 <div class="contenido col-md-12">
-    <h1> Notas </h1>
+    <h1> Notas </h1> <h4> de {{materia.nombre}} | {{trimestre}}° trimestre</h4>
 
 
     <ul class="nav nav-tabs">
-      <li class="active"><a href="#">Primer Trimestre</a></li>
-      <li><a href="#">Segundo Trimestre</a></li>
-      <li><a href="#">Tercer Trimestre</a></li>
+      <li><a href="/cursos/{{materia.pk}}/1">Primer Trimestre</a></li>
+      <li><a href="/cursos/{{materia.pk}}/2">Segundo Trimestre</a></li>
+      <li><a href="/cursos/{{materia.pk}}/3">Tercer Trimestre</a></li>
       <li> <a class="dropdown-toggle" data-toggle="dropdown" href="#">
           Opciones <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
-           <li><a href="#"><span class="text-success">Terminar edicion</span></a></li>
-           <li><a href="#"><span class="text-warning">Cerrar Trimestre</span></a></li>
-           <li><a href="#"><span class="text-info">Guardar y volver</span></a></li>
-           <li><a href="#"><span class="text-danger">No guardar y volver</a></span></li>
-
+           <li><a href="#" onclick="submitForms()"><span class="text-success">Guardar y volver</span></a></li>
+           <li><a href="/"><span class="text-danger">Volver sin guardar</span></a></li>
         </ul>
         </li>
     </ul>
@@ -91,11 +88,23 @@
                             <form action="/examen/borrar" method="post">
                                 {% csrf_token %}
                                 <input name="examen_pk" type="number" hidden="hidden" value={{examen.pk}}>
-                                <button type="submit"><i class="fa fa-close" style="color:red;"></i></button>
+                                {% if editable %}
+                                    <button class="btn btn-danger btn-xs" type="submit" data-toggle="tooltip" title="Borrar examen y todas las notas de alumnos relacionadas con este examen">
+                                        Borrar
+                                    </button>
+                                {% else %}
+                                    <button disabled class="btn btn-danger btn-xs" type="submit" data-toggle="tooltip" title="Borrar examen y todas las notas de alumnos relacionadas con este examen">
+                                        Borrar
+                                    </button>
+                                {% endif %}
                             </form>
                         </td>
                     {% endfor %}
-                    <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Agregar columna</button> </td>
+                    {% if editable %}
+                        <td><button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Nueva nota</button> </td>
+                    {% else %}
+                        <td><button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal" disabled>Nueva nota</button> </td>
+                    {% endif %}
                 </tr>
 
             </thead>
@@ -109,9 +118,19 @@
                                     <form class="form-nota" action="/examen_alumno/" method="post">
                                         {% csrf_token %}
                                         {% if nota.nota %}
-                                            <input class="col-md-4" name="nota" type="int" value="{{nota.nota}}" maxlength="2"/>
+                                            <input class="col-md-4" name="nota" type="int" value="{{nota.nota}}" maxlength="2"
+                                                    {% if editable %}
+                                                        />
+                                                    {% else %}
+                                                        disabled />
+                                                    {% endif %}
                                         {% else %}
-                                            <input class="col-md-4" name="nota" type="int" value="" maxlength="2"/>
+                                            <input class="col-md-4" name="nota" type="int" value="" maxlength="2"
+                                                    {% if editable %}
+                                                        />
+                                                    {% else %}
+                                                        disabled />
+                                                    {% endif %}
                                         {% endif %}
                                         <input name="examen_alumno" type="int" value="{{nota.pk}}" hidden="hidden"/>
                                     </form>
@@ -120,9 +139,6 @@
                     </tr>
                 {% endfor %}
             </tbody>
-
-          <input type="button" value="GUARDAR" onclick="submitForms()" />
-
           <!-- Formulario que se submitea al enviar todas las notas -->
             <form id="form-principal" action="/examenes_alumno/" method="post">
                 {% csrf_token %}

@@ -54,6 +54,7 @@ class Seccion(models.Model):
     anio = models.PositiveSmallIntegerField(verbose_name='Año')
     cursada = models.CharField(max_length=64, verbose_name='Cursada')
     grupo = models.CharField(max_length=64, verbose_name='Grupo', null=True, blank=True)
+    anio_calendario = models.IntegerField()
 
     def __unicode__(self):
         if self.grupo:

@@ -311,24 +311,14 @@ class CursosView(View):
         # obtengo la materia que se quiere visualizar
         materia = Materia.objects.filter(pk=kwargs['materia_pk'])[0]
 
-        # obtengo las inscripciones para la seccion a la que pertenece la materia
-        inscripciones = Inscripcion.objects.filter(seccion=materia.seccion)
-
-        # obtengo todos los examenes para esta materia
-        examenes = Examen.objects.filter(materia=materia, trimestre=trimestre)
-
         # Que el trimestre sea editable depende de la fecha actual.
         editable = es_trimestre_editable(trimestre)
 
-        # este diccionario debe contener todos los examenes y en cada examen un diccionario que sea
-        # alumno:nota (deben estar todos los alumnos)
-        dict_examenes = {}
+        # obtengo las inscripciones para la seccion a la que pertenece la materia
+        inscripciones = Inscripcion.objects.filter(seccion=materia.seccion)
 
-        for examen in examenes:
-            dict_alumnos = {}
-            for inscripcion in inscripciones:
-                dict_alumnos[inscripcion.alumno] = get_or_create_nota(ExamenAlumno.objects.filter(examen=examen, alumno=inscripcion.alumno), examen, inscripcion.alumno)
-                dict_examenes[examen] = dict_alumnos
+        dict_examenes = get_dict_examenes(materia, trimestre)
+
         return render(request, 'pantalla_cursos.html', {
                                                         'examenes':dict_examenes,
                                                         'alumnos':map(lambda a : a.alumno, inscripciones),
@@ -368,6 +358,56 @@ def get_institucion_name():
         nombre_institucion = "Nombre a completar"
     return nombre_institucion
 
+class ImprimirBoletinesView(View):
+    def post(self, request):
+        year = datetime.datetime.now().date().year
+        trimestre = 1
+
+        # se crea la carpeta que va a contener a los boletines
+        folder_name = 'boletines-' + str(year) + '-' + str(trimestre) + '-trimestre'
+        if os.path.exists(folder_name):
+            import shutil
+            shutil.rmtree(folder_name)
+        os.mkdir(folder_name)
+
+
+        inscripciones = Inscripcion.objects.filter(seccion__anio_calendario=year)
+        for inscripcion in inscripciones:
+            imprimir_boletin(inscripcion, folder_name)
+        return redirect('login')
+
+def imprimir_boletin(inscripcion, folder_name):
+    print inscripcion.pk
+    reload(sys)
+    sys.setdefaultencoding("latin-1")
+    file = open(os.path.join(folder_name, str(inscripcion.alumno.dni) + '.csv'), 'wb')
+    wr = csv.writer(file, quoting=csv.QUOTE_ALL)
+    wr.writerow(['','','BOLETIN DE CALIFICACIONES'])
+    wr.writerow([])
+    wr.writerow([])
+    wr.writerow(['','Nombre',inscripcion.alumno.primer_nombre])
+    wr.writerow(['','Apellido', inscripcion.alumno.apellido])
+    wr.writerow(['','Curso',inscripcion.seccion.anio])
+    wr.writerow([])
+    wr.writerow([])
+    wr.writerow(['Materia', 'T1', 'T2', 'T3', 'Pr.', 'Dic.', 'Feb.', 'CEA'])
+
+    materias = Materia.objects.filter(seccion=inscripcion.seccion)
+    for materia in materias:
+        materia_row = []
+        materia_row.append(materia.nombre)
+        materia_row.append(get_promedio_de_trimestre(inscripcion.alumno, materia,1))
+        materia_row.append(get_promedio_de_trimestre(inscripcion.alumno, materia,2))
+        materia_row.append(get_promedio_de_trimestre(inscripcion.alumno, materia,3))
+
+        wr.writerow(materia_row)
+
+    file.close()
+
+def get_promedio_de_trimestre(alumno, materia, trimestre):
+    dict_examenes = get_dict_examenes(materia, trimestre)
+    return promedio_alumno(alumno, dict_examenes)
+
 class ExportarCursoView(View):
 
     def post(self, request):
@@ -389,29 +429,7 @@ def exportar_curso(materia_pk, trimestre):
     file = open(str(datetime.datetime.now()) + "-" + str(materia.nombre) + "-" + str(trimestre) + '.csv', 'wb')
     wr = csv.writer(file, quoting=csv.QUOTE_ALL)
 
-    # obtengo notas y armo la planilla
-
-    # obtengo las inscripciones para la seccion a la que pertenece la materia
-    inscripciones = Inscripcion.objects.filter(seccion=materia.seccion)
-
-    # obtengo los alumnos
-    alumnos = map(lambda i : i.alumno, inscripciones)
-
-    # obtengo todos los examenes para esta materia
-    examenes = Examen.objects.filter(materia=materia, trimestre=trimestre)
-
-    # Que el trimestre sea editable depende de la fecha actual.
-    editable = es_trimestre_editable(trimestre)
-
-    # este diccionario debe contener todos los examenes y en cada examen un diccionario que sea
-    # alumno:nota (deben estar todos los alumnos)
-    dict_examenes = {}
-
-    for examen in examenes:
-        dict_alumnos = {}
-        for inscripcion in inscripciones:
-            dict_alumnos[inscripcion.alumno] = get_or_create_nota(ExamenAlumno.objects.filter(examen=examen, alumno=inscripcion.alumno), examen, inscripcion.alumno)
-            dict_examenes[examen] = dict_alumnos
+    dict_examenes = get_dict_examenes(materia, trimestre)
 
     wr.writerow([materia.nombre, str(trimestre) + ' trimestre'])
     wr.writerow([])
@@ -437,3 +455,21 @@ def exportar_curso(materia_pk, trimestre):
         alumno_row.append(promedio_alumno(alumno, dict_examenes))
         wr.writerow(alumno_row)
     return file
+
+# este diccionario debe contener todos los examenes y en cada examen un diccionario que sea
+# alumno:nota (deben estar todos los alumnos)
+def get_dict_examenes(materia, trimestre):
+    # obtengo las inscripciones para la seccion a la que pertenece la materia
+    inscripciones = Inscripcion.objects.filter(seccion=materia.seccion)
+
+    # obtengo todos los examenes para esta materia
+    examenes = Examen.objects.filter(materia=materia, trimestre=trimestre)
+
+    dict_examenes = {}
+
+    for examen in examenes:
+        dict_alumnos = {}
+        for inscripcion in inscripciones:
+            dict_alumnos[inscripcion.alumno] = get_or_create_nota(ExamenAlumno.objects.filter(examen=examen, alumno=inscripcion.alumno), examen, inscripcion.alumno)
+            dict_examenes[examen] = dict_alumnos
+    return dict_examenes

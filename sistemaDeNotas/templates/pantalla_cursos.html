@@ -3,6 +3,12 @@
 
 {% block login_content %}
 <script xmlns="http://www.w3.org/1999/html">
+
+    exportar_notas = function(){
+        form_exportar = document.getElementById('form_exportar');
+        form_exportar.submit();
+    }
+
     submitForms = function(){
 
         /////////////////// NOTAS DE LOS ALUMNOS ////////////////////////////
@@ -59,7 +65,11 @@
 
 <div class="contenido col-md-12">
     <h1> Notas </h1> <h4> de {{materia.nombre}} | {{trimestre}}° trimestre</h4>
-
+    {% if editable %}
+        <h5 style="color:green;">(Editable)</h5>
+    {% else %}
+        <h5 style="color:red;">(No Editable)</h5>
+    {% endif %}
 
     <ul class="nav nav-tabs">
       <li><a href="/cursos/{{materia.pk}}/1">Primer Trimestre</a></li>
@@ -71,6 +81,14 @@
           <ul class="dropdown-menu">
            <li><a href="#" onclick="submitForms()"><span class="text-success">Guardar y volver</span></a></li>
            <li><a href="/"><span class="text-danger">Volver sin guardar</span></a></li>
+           <li>
+               <a href="#" onclick="exportar_notas()"><span class="text-primary">Exportar notas</span></a>
+               <form id="form_exportar" action="/exportar/curso" method="post">
+                    {% csrf_token %}
+                    <input name="materia" type="text" value={{materia.pk}} hidden="hidden"/>
+                    <input name="trimestre" type="text" value={{trimestre}} hidden="hidden"/>
+                </form>
+           </li>
         </ul>
         </li>
     </ul>
@@ -204,7 +222,5 @@
 
 </div>
 </div>
-
-
 
 {% endblock %}

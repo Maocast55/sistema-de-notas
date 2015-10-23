@@ -3,7 +3,7 @@
 
 from django.shortcuts import render
 from django.views.generic import View
-from django.shortcuts import redirect
+from django.shortcuts import redirect, HttpResponse
 from core.forms import LoginForm, ChangePasswordForm
 from core.models import *
 from django.contrib.auth import login, authenticate, logout
@@ -11,7 +11,10 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from datetime import date
 from models import Examen,ExamenAlumno
-
+import os
+import sys
+import csv
+import datetime
 
 # Filtros para usar en los templates
 from django.template.defaulttags import register
@@ -308,9 +311,6 @@ class CursosView(View):
         # obtengo la materia que se quiere visualizar
         materia = Materia.objects.filter(pk=kwargs['materia_pk'])[0]
 
-        # obtengo los examenes para esa materia (en todos los trimestres por ahora)
-        examenes = Examen.objects.filter(materia= materia)
-
         # obtengo las inscripciones para la seccion a la que pertenece la materia
         inscripciones = Inscripcion.objects.filter(seccion=materia.seccion)
 
@@ -367,3 +367,73 @@ def get_institucion_name():
     else:
         nombre_institucion = "Nombre a completar"
     return nombre_institucion
+
+class ExportarCursoView(View):
+
+    def post(self, request):
+        file = exportar_curso(request.POST['materia'], request.POST['trimestre'])
+        file = open(file.name,"r")
+        response = HttpResponse(file.read())
+        response["Content-Disposition"]= "attachment; filename=%s" % os.path.split(file.name)[1]
+        os.remove(file.name)
+        return response
+
+# Guarda en un archivo la planilla del curso y retorna al archivo.
+def exportar_curso(materia_pk, trimestre):
+    reload(sys)
+    sys.setdefaultencoding("latin-1")
+
+    materia = Materia.objects.get(pk=materia_pk)
+    trimestre = int(trimestre)
+
+    file = open(str(datetime.datetime.now()) + "-" + str(materia.nombre) + "-" + str(trimestre) + '.csv', 'wb')
+    wr = csv.writer(file, quoting=csv.QUOTE_ALL)
+
+    # obtengo notas y armo la planilla
+
+    # obtengo las inscripciones para la seccion a la que pertenece la materia
+    inscripciones = Inscripcion.objects.filter(seccion=materia.seccion)
+
+    # obtengo los alumnos
+    alumnos = map(lambda i : i.alumno, inscripciones)
+
+    # obtengo todos los examenes para esta materia
+    examenes = Examen.objects.filter(materia=materia, trimestre=trimestre)
+
+    # Que el trimestre sea editable depende de la fecha actual.
+    editable = es_trimestre_editable(trimestre)
+
+    # este diccionario debe contener todos los examenes y en cada examen un diccionario que sea
+    # alumno:nota (deben estar todos los alumnos)
+    dict_examenes = {}
+
+    for examen in examenes:
+        dict_alumnos = {}
+        for inscripcion in inscripciones:
+            dict_alumnos[inscripcion.alumno] = get_or_create_nota(ExamenAlumno.objects.filter(examen=examen, alumno=inscripcion.alumno), examen, inscripcion.alumno)
+            dict_examenes[examen] = dict_alumnos
+
+    wr.writerow([materia.nombre, str(trimestre) + ' trimestre'])
+    wr.writerow([])
+    wr.writerow(['DNI', 'Nombre','Apellido'])
+
+    # Fila de examenes
+    examenes_row = ['','',''] # Estos espacios son por dni, nombre y apellido
+    for examen, alumnos in dict_examenes.iteritems():
+        examenes_row.append(examen.nombre)
+    examenes_row.append('PROMEDIO')
+    wr.writerow(examenes_row)
+
+    for alumno in alumnos:
+        alumno_row = []
+        alumno_row.append(alumno.dni)
+        alumno_row.append(alumno.primer_nombre)
+        alumno_row.append(alumno.apellido)
+        for nota in get_notas_de(dict_examenes, alumno):
+            if nota.nota:
+                alumno_row.append(nota.nota)
+            else:
+                alumno_row.append('')
+        alumno_row.append(promedio_alumno(alumno, dict_examenes))
+        wr.writerow(alumno_row)
+    return file

@@ -54,13 +54,13 @@ class Seccion(models.Model):
     anio = models.PositiveSmallIntegerField(verbose_name='Año')
     cursada = models.CharField(max_length=64, verbose_name='Cursada')
     grupo = models.CharField(max_length=64, verbose_name='Grupo', null=True, blank=True)
-    anio_calendario = models.IntegerField()
+    anio_calendario = models.IntegerField(verbose_name='Año calendario')
 
     def __unicode__(self):
         if self.grupo:
-            return  str(self.anio) + self.cursada + ' grupo ' + self.grupo
+            return  str(self.anio) + self.cursada + ' grupo ' + self.grupo + ' ' + str(self.anio_calendario)
         else:
-            return str(self.anio) + self.cursada
+            return str(self.anio) + self.cursada + ' ' + str(self.anio_calendario)
 
     class Meta:
         verbose_name = 'Sección'

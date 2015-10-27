@@ -216,7 +216,8 @@ class ExamenNuevoView(View):
         nombre = request.POST['nombre']
         observacion = request.POST['observacion']
         fecha = request.POST['fecha']
-        examen = Examen.objects.create(nombre=nombre, materia=Materia.objects.get(pk=materia_pk), trimestre=trimestre, observacion=observacion, fecha=fecha)
+        es_integrador = request.POST['es_integrador']
+        examen = Examen.objects.create(nombre=nombre, materia=Materia.objects.get(pk=materia_pk), trimestre=trimestre, observacion=observacion, fecha=fecha, es_integrador = es_integrador)
         return redirect('/cursos/' + materia_pk + '/' + trimestre)
 
 class ManualView(View):

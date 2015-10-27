@@ -89,6 +89,7 @@ class Examen(models.Model):
     observacion = models.TextField(max_length=512, null=True, blank=True)
     materia = models.ForeignKey(Materia, verbose_name='Materia')
     trimestre = models.IntegerField()
+    es_integrador = models.BooleanField(default=False)
 
     def __unicode__(self):
         return str(self.materia) + ' ' + str(self.nombre) + ' ' + str(self.trimestre)

@@ -224,6 +224,11 @@ class ManualView(View):
     def get(self, request):
         return render(request, 'manual.html')
 
+class EstadisticasView(View):
+
+    def get(self, request):
+        return render(request, 'estadisticas.html')
+
 
 class Dudas_profesorView(View):
 

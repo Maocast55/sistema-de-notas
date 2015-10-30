@@ -273,9 +273,14 @@ margin-top:5px;
 margin-left:400px;
 }
 
+#bannerEstadistica2{
+float: left;
+margin-top:-500px;
+margin-left:900px;
+}
 
-<!--PARA PONER LA SEGUNDA IMAGEN CON CIUDAD: 
-bannerEstadisticas2 float:left;
-margin-top:5px;
-margin-right:000px;
--->
+#bannerEstadistica3{
+float: left;
+margin-top:-500px;
+margin-left:-50px;
+}

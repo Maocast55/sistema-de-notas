@@ -37,7 +37,8 @@ def promedio_alumno(alumno, examenes):
         materia = notas_de_alumno[0].examen.materia
         trimestre = notas_de_alumno[0].examen.trimestre
         examenes_alumno = ExamenAlumno.objects.filter(alumno=alumno, examen__materia=materia, examen__trimestre = trimestre)
-        return round(reduce(lambda x, y : x + y, map(lambda nota: get_nota(nota.nota), examenes_alumno)) / float(len(examenes_alumno)),2)
+        examenes_alumno = filter(lambda e : e.nota != None, examenes_alumno)
+        return round(reduce(lambda x, y : x + y, map(lambda nota: get_nota(nota.nota), examenes_alumno)) / float(len(examenes_alumno)))
     else:
         return 0
 
@@ -216,7 +217,12 @@ class ExamenNuevoView(View):
         nombre = request.POST['nombre']
         observacion = request.POST['observacion']
         fecha = request.POST['fecha']
-        es_integrador = request.POST['es_integrador']
+
+        if 'es_integrador' in request.POST:
+            es_integrador = request.POST['es_integrador']
+        else:
+            es_integrador = False
+
         examen = Examen.objects.create(nombre=nombre, materia=Materia.objects.get(pk=materia_pk), trimestre=trimestre, observacion=observacion, fecha=fecha, es_integrador = es_integrador)
         return redirect('/cursos/' + materia_pk + '/' + trimestre)
 
@@ -447,7 +453,7 @@ def exportar_curso(materia_pk, trimestre):
         examenes_row.append(examen.nombre)
     examenes_row.append('PROMEDIO')
     wr.writerow(examenes_row)
-
+    alumnos = sorted(alumnos, key=lambda a : str.lower(str(a.apellido)))
     for alumno in alumnos:
         alumno_row = []
         alumno_row.append(alumno.dni)
@@ -472,7 +478,6 @@ def get_dict_examenes(materia, trimestre):
     examenes = Examen.objects.filter(materia=materia, trimestre=trimestre)
 
     dict_examenes = {}
-
     for examen in examenes:
         dict_alumnos = {}
         for inscripcion in inscripciones:

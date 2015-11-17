@@ -141,14 +141,14 @@
                                     <form class="form-nota" action="/examen_alumno/" method="post">
                                         {% csrf_token %}
                                         {% if nota.nota %}
-                                            <input class="col-md-4" name="nota" type="int" value="{{nota.nota}}" maxlength="2"
+                                            <input style="width:40px;" name="nota" type="int" value="{{nota.nota}}" maxlength="2"
                                                     {% if editable %}
                                                         />
                                                     {% else %}
                                                         disabled />
                                                     {% endif %}
                                         {% else %}
-                                            <input class="col-md-4" name="nota" type="int" value="" maxlength="2"
+                                            <input style="width:40px;" name="nota" type="int" value="" maxlength="2"
                                                     {% if editable %}
                                                         />
                                                     {% else %}

@@ -58,9 +58,9 @@ class Seccion(models.Model):
 
     def __unicode__(self):
         if self.grupo:
-            return  str(self.anio) + self.cursada + ' grupo ' + self.grupo + ' ' + str(self.anio_calendario)
+            return  self.cursada + '° ' + self.grupo + ' | ' + str(self.anio)
         else:
-            return str(self.anio) + self.cursada + ' ' + str(self.anio_calendario)
+            return str(self.anio) + '°  ' + self.cursada + ' ' + str(self.anio_calendario)
 
     class Meta:
         verbose_name = 'Sección'

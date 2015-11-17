@@ -371,6 +371,11 @@ def get_institucion_name():
     return nombre_institucion
 
 class ImprimirBoletinesView(View):
+
+    def get(self, request):
+        secciones = Seccion.objects.all()
+        return render(request, 'imprimir_boletines.html', {'secciones':secciones})
+
     def post(self, request):
         year = datetime.datetime.now().date().year
         trimestre = 1

@@ -38,7 +38,10 @@ def promedio_alumno(alumno, examenes):
         trimestre = notas_de_alumno[0].examen.trimestre
         examenes_alumno = ExamenAlumno.objects.filter(alumno=alumno, examen__materia=materia, examen__trimestre = trimestre)
         examenes_alumno = filter(lambda e : e.nota != None, examenes_alumno)
-        return round(reduce(lambda x, y : x + y, map(lambda nota: get_nota(nota.nota), examenes_alumno)) / float(len(examenes_alumno)))
+        if len(examenes_alumno) > 0:
+            return round(reduce(lambda x, y : x + y, map(lambda nota: get_nota(nota.nota), examenes_alumno)) / float(len(examenes_alumno)))
+        else:
+            return 0
     else:
         return 0
 

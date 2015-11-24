@@ -376,6 +376,7 @@ class CursosView(View):
 
         # obtengo las inscripciones para la seccion a la que pertenece la materia
         inscripciones = Inscripcion.objects.filter(seccion=materia.seccion)
+        inscripciones = filter(lambda i : i.fecha_baja == None or i.fecha_baja> datetime.datetime.now().date(), inscripciones)
 
         dict_examenes = get_dict_examenes(materia, trimestre)
 

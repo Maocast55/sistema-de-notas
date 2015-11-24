@@ -47,7 +47,7 @@ def promedio_alumno(alumno, examenes):
                 if len(integrador) > 0:
                     notas_no_integradoras = filter(lambda e : not e.examen.es_integrador, examenes_alumno)
                     promedio_no_integradoras = round(reduce(lambda x, y : x + y, map(lambda nota: get_nota(nota.nota), notas_no_integradoras)) / float(len(notas_no_integradoras)),2)
-                    return int((promedio_no_integradoras + integrador[0].nota)/2)
+                    return int(round((promedio_no_integradoras + integrador[0].nota)/2,0))
 
                 # tercer trimestre, sin integradora
                 else:
@@ -71,20 +71,13 @@ def promedio_alumno_3_notas(alumno, examenes):
         if len(examenes_alumno) > 0:
             # tercer trimestre
             if trimestre == 3:
-                integrador = filter(lambda e : e.examen.es_integrador, examenes_alumno)
-
-                # tercer trimestre, con integradora.
-                if len(integrador) > 0:
                     notas_no_integradoras = filter(lambda e : not e.examen.es_integrador, examenes_alumno)
                     promedio_no_integradoras = round(reduce(lambda x, y : x + y, map(lambda nota: get_nota(nota.nota), notas_no_integradoras)) / float(len(notas_no_integradoras)),2)
                     return promedio_no_integradoras
 
-                # tercer trimestre, sin integradora
-                else:
-                    return int(reduce(lambda x, y : x + y, map(lambda nota: get_nota(nota.nota), examenes_alumno)) / float(len(examenes_alumno)))
             # primer y segundo trimestre, sin integradora
             else:
-                return int(reduce(lambda x, y : x + y, map(lambda nota: get_nota(nota.nota), examenes_alumno)) / float(len(examenes_alumno)))
+                return 0
         else:
             return 0
     else:

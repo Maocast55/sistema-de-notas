@@ -46,8 +46,11 @@ def promedio_alumno(alumno, examenes):
                 # tercer trimestre, con integradora.
                 if len(integrador) > 0:
                     notas_no_integradoras = filter(lambda e : not e.examen.es_integrador, examenes_alumno)
-                    promedio_no_integradoras = round(reduce(lambda x, y : x + y, map(lambda nota: get_nota(nota.nota), notas_no_integradoras)) / float(len(notas_no_integradoras)),2)
-                    return int(round((promedio_no_integradoras + integrador[0].nota)/2,0))
+                    if len(notas_no_integradoras) > 0:
+                        promedio_no_integradoras = round(reduce(lambda x, y : x + y, map(lambda nota: get_nota(nota.nota), notas_no_integradoras)) / float(len(notas_no_integradoras)),2)
+                        return int(round((promedio_no_integradoras + integrador[0].nota)/2,0))
+                    else:
+                        return 0
 
                 # tercer trimestre, sin integradora
                 else:
@@ -72,9 +75,11 @@ def promedio_alumno_3_notas(alumno, examenes):
             # tercer trimestre
             if trimestre == 3:
                     notas_no_integradoras = filter(lambda e : not e.examen.es_integrador, examenes_alumno)
-                    promedio_no_integradoras = round(reduce(lambda x, y : x + y, map(lambda nota: get_nota(nota.nota), notas_no_integradoras)) / float(len(notas_no_integradoras)),2)
-                    return promedio_no_integradoras
-
+                    if len(notas_no_integradoras) > 0:
+                        promedio_no_integradoras = round(reduce(lambda x, y : x + y, map(lambda nota: get_nota(nota.nota), notas_no_integradoras)) / float(len(notas_no_integradoras)),2)
+                        return promedio_no_integradoras
+                    else:
+                        return 0
             # primer y segundo trimestre, sin integradora
             else:
                 return 0
@@ -193,7 +198,7 @@ def materia_correcta_en_trimestre(materia, trimestre):
     examenes = len(Examen.objects.filter(materia=materia, trimestre=trimestre))
 
     # Obtengo todos los alumnos inscriptos a la materia en cuestión.
-    alumnos_inscriptos = map(lambda i: i.alumno, Inscripcion.objects.filter(seccion=materia.seccion))
+    alumnos_inscriptos = map(lambda i: i.alumno, filter(lambda i : i.fecha_baja == None or i.fecha_baja> datetime.datetime.now().date(), Inscripcion.objects.filter(seccion=materia.seccion)))
 
     materia_correcta = True
 

@@ -30,6 +30,14 @@ def get_notas_de(examenes, alumno):
         notas.append(alumnos[alumno])
     return notas
 
+
+@register.filter
+def hay_integradora(examenes):
+    res = False
+    for examen, alumnos in examenes.iteritems():
+        res = res or examen.es_integrador
+    return res
+
 @register.filter
 def promedio_alumno(alumno, examenes):
     notas_de_alumno = get_notas_de(examenes, alumno)
@@ -54,10 +62,10 @@ def promedio_alumno(alumno, examenes):
 
                 # tercer trimestre, sin integradora
                 else:
-                    return int(reduce(lambda x, y : x + y, map(lambda nota: get_nota(nota.nota), examenes_alumno)) / float(len(examenes_alumno)))
+                    return int(round(reduce(lambda x, y : x + y, map(lambda nota: get_nota(nota.nota), examenes_alumno)) / float(len(examenes_alumno)),0))
             # primer y segundo trimestre, sin integradora
             else:
-                return int(reduce(lambda x, y : x + y, map(lambda nota: get_nota(nota.nota), examenes_alumno)) / float(len(examenes_alumno)))
+                return int(round(reduce(lambda x, y : x + y, map(lambda nota: get_nota(nota.nota), examenes_alumno)) / float(len(examenes_alumno)),0))
         else:
             return 0
     else:

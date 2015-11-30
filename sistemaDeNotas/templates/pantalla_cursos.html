@@ -129,7 +129,11 @@
 
                     {% if trimestre == '3' %}
                         <td>PROMEDIO <br>(sin integradora)</td>
-                        <td>PROMEDIO <br>(con integradora)</td>
+
+                        {% if examenes|hay_integradora %}
+                            <td>PROMEDIO <br>(con integradora)</td>
+                        {% endif %}
+
                     {% else %}
                         <td>PROMEDIO</td>
                     {% endif %}
@@ -172,13 +176,13 @@
                             {% endfor %}
 
                             {% if trimestre == '3' %}
-
-                                {% if alumno|promedio_alumno_3_notas:examenes >= 7 %}
-                                    <td style="color:green;">{{alumno|promedio_alumno_3_notas:examenes}}</td>
-                                {% else %}
-                                    <td style="color:red;">{{alumno|promedio_alumno_3_notas:examenes}}</td>
+                                {% if examenes|hay_integradora %}
+                                    {% if alumno|promedio_alumno_3_notas:examenes >= 7 %}
+                                        <td style="color:green;">{{alumno|promedio_alumno_3_notas:examenes}}</td>
+                                    {% else %}
+                                        <td style="color:red;">{{alumno|promedio_alumno_3_notas:examenes}}</td>
+                                    {% endif %}
                                 {% endif %}
-
                             {% endif %}
 
                             {% if alumno|promedio_alumno:examenes >= 7 %}
@@ -231,9 +235,9 @@
         <form action="/examen/nuevo" method="post">
             {% csrf_token %}
             <label>Ingrese el nombre del examen</label>
-            <input type="text" class="form-control" name="nombre" placeholder="ej: Evaluación escrita" required=""/><br>
+            <input type="text" class="form-control" name="nombre" placeholder="ej: Evaluación escrita" required="" maxlength="30"/><br>
             <label>Ingrese la fecha del examen</label>
-            <input type="date" class="form-control" name="fecha" required=""/><br>
+            <input type="date" class="form-control" name="fecha" required="" placeholder="dd/mm/aaaa"/><br>
             <label>Ingrese una observación (opcional)</label>
             <textarea type="text" class="form-control" name="observacion"/></textarea><br>
             <label>¿Es integradora?</label>

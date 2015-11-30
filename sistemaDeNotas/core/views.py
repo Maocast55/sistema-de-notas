@@ -383,12 +383,15 @@ class CursosView(View):
         # obtengo las inscripciones para la seccion a la que pertenece la materia
         inscripciones = Inscripcion.objects.filter(seccion=materia.seccion)
         inscripciones = filter(lambda i : i.fecha_baja == None or i.fecha_baja> datetime.datetime.now().date(), inscripciones)
+        alumnos = map(lambda a : a.alumno, inscripciones)
+        alumnos = sorted(alumnos, key=lambda a : str.lower(str(a.apellido)))
 
         dict_examenes = get_dict_examenes(materia, trimestre)
 
+
         return render(request, 'pantalla_cursos.html', {
                                                         'examenes':dict_examenes,
-                                                        'alumnos':map(lambda a : a.alumno, inscripciones),
+                                                        'alumnos': alumnos,
                                                         'materia':materia,
                                                         'trimestre':trimestre,
                                                         'editable':editable,

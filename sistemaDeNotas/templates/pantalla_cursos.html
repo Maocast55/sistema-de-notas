@@ -127,7 +127,7 @@
                         </td>
                     {% endfor %}
 
-                    {% if trimestre == '3' %}
+                    {% if trimestre == '3' and examenes|hay_integradora%}
                         <td>PROMEDIO <br>(sin integradora)</td>
 
                         {% if examenes|hay_integradora %}

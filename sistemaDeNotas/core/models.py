@@ -140,7 +140,7 @@ class ExamenAlumno(models.Model):
 class Inscripcion(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    fecha_alta = models.DateField(verbose_name='Fecha alta')        # fecha en la que se inicia la inscripción
+    fecha_alta = models.DateField(verbose_name='Fecha alta')                                # fecha en la que se inicia la inscripción
     fecha_hasta = models.DateField(verbose_name='Fecha hasta', null=True, blank=True)      # el alumno se cambió de sección o finalizó el ciclo lectivo
     fecha_baja = models.DateField(verbose_name='Fecha baja', null=True, blank=True)        # el alumno se fue del colegio
     seccion = models.ForeignKey(Seccion, verbose_name='Sección')

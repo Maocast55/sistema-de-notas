@@ -21,41 +21,23 @@ from django.template.defaulttags import register
 
 @register.filter
 def prom_primer_trimestre(alumno, materia):
-    examen_alumno_promedios = AlumnoMateriaPromedios.objects.filter(alumno=alumno, materia=materia)
-    if(len(examen_alumno_promedios)<0):
-        examen_alumno_promedios = AlumnoMateriaPromedios.objects.create(alumno=alumno, materia=materia)
-    else:
-        examen_alumno_promedios = examen_alumno_promedios[0]
-    if examen_alumno_promedios.primero == None:
-        examenes = get_examenes_del_alumno_en_materia_de_trimestre(alumno, 1, materia)
-        examen_alumno_promedios.primero = promedio_alumno(alumno, examenes)
-        examen_alumno_promedios.save()
+    examen_alumno_promedios = AlumnoMateriaPromedios.objects.get(alumno=alumno, materia=materia)
+    if(not examen_alumno_promedios):
+        examen_alumno_promedios = AlumnoMateriaPromedios.objects.create(alumno=alumno, materia=materia, primero=0, segundo=0, tercero=0)
     return examen_alumno_promedios.primero
 
 @register.filter
 def prom_segundo_trimestre(alumno, materia):
-    examen_alumno_promedios = AlumnoMateriaPromedios.objects.filter(alumno=alumno, materia=materia)
-    if(len(examen_alumno_promedios)<0):
-        examen_alumno_promedios = AlumnoMateriaPromedios.objects.create(alumno=alumno, materia=materia)
-    else:
-        examen_alumno_promedios = examen_alumno_promedios[0]
-    if examen_alumno_promedios.segundo == None:
-        examenes = get_examenes_del_alumno_en_materia_de_trimestre(alumno, 2, materia)
-        examen_alumno_promedios.primero = promedio_alumno(alumno, examenes)
-        examen_alumno_promedios.save()
+    examen_alumno_promedios = AlumnoMateriaPromedios.objects.get(alumno=alumno, materia=materia)
+    if(not examen_alumno_promedios):
+        examen_alumno_promedios = AlumnoMateriaPromedios.objects.create(alumno=alumno, materia=materia, primero=0, segundo=0, tercero=0)
     return examen_alumno_promedios.segundo
 
 @register.filter
 def prom_tercer_trimestre(alumno, materia):
-    examen_alumno_promedios = AlumnoMateriaPromedios.objects.filter(alumno=alumno, materia=materia)
-    if(len(examen_alumno_promedios)<0):
-        examen_alumno_promedios = AlumnoMateriaPromedios.objects.create(alumno=alumno, materia=materia)
-    else:
-        examen_alumno_promedios = examen_alumno_promedios[0]
-    if examen_alumno_promedios.tercero == None:
-        examenes = get_examenes_del_alumno_en_materia_de_trimestre(alumno, 3, materia)
-        examen_alumno_promedios.primero = promedio_alumno(alumno, examenes)
-        examen_alumno_promedios.save()
+    examen_alumno_promedios = AlumnoMateriaPromedios.objects.get(alumno=alumno, materia=materia)
+    if(not examen_alumno_promedios):
+        examen_alumno_promedios = AlumnoMateriaPromedios.objects.create(alumno=alumno, materia=materia, primero=0, segundo=0, tercero=0)
     return examen_alumno_promedios.tercero
 
 @register.filter
@@ -479,13 +461,13 @@ class ExamenesAlumnoView(View):
                 else:
                     examen_alumno.nota = nota
 
+                examen_alumno.save()
+
                 # Persisto las notas trimestrales del alumno, para no calcularlas luego.
 
-                examen_alumno_promedios = AlumnoMateriaPromedios.objects.filter(alumno=examen_alumno.alumno, materia=examen_alumno.examen.materia)
-                if(len(examen_alumno_promedios)>0):
-                    examen_alumno_promedios = examen_alumno_promedios[0]
-                else:
-                    examen_alumno_promedios = AlumnoMateriaPromedios.objects.create(alumno=examen_alumno.alumno, materia=examen_alumno.examen.materia)
+                examen_alumno_promedios = AlumnoMateriaPromedios.objects.get(alumno=examen_alumno.alumno, materia=examen_alumno.examen.materia)
+                if(not examen_alumno_promedios):
+                    examen_alumno_promedios = AlumnoMateriaPromedios.objects.create(alumno=examen_alumno.alumno, materia=examen_alumno.examen.materia, primero=0, segundo=0, tercero=0)
 
                 examenes = get_examenes_del_alumno_en_materia_de_trimestre(examen_alumno.alumno, 1, examen_alumno.examen.materia)
                 examen_alumno_promedios.primero = promedio_alumno(examen_alumno.alumno, examenes)
@@ -498,7 +480,6 @@ class ExamenesAlumnoView(View):
 
                 examen_alumno_promedios.save()
 
-                examen_alumno.save()
         return redirect('login')
 
 # Recibe una lista, si ésta contiene un elemento lo retorna, de lo contrario crea un nuevo examen_alumno con los datos que recibe.

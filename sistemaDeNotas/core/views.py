@@ -24,21 +24,27 @@ def prom_primer_trimestre(alumno, materia):
     examen_alumno_promedios = AlumnoMateriaPromedios.objects.filter(alumno=alumno, materia=materia)
     if(len(examen_alumno_promedios) == 0):
         examen_alumno_promedios = AlumnoMateriaPromedios.objects.create(alumno=alumno, materia=materia, primero=0, segundo=0, tercero=0)
-    return examen_alumno_promedios.primero
+        return examen_alumno_promedios.primero
+    else:
+        return examen_alumno_promedios[0].primero
 
 @register.filter
 def prom_segundo_trimestre(alumno, materia):
     examen_alumno_promedios = AlumnoMateriaPromedios.objects.filter(alumno=alumno, materia=materia)
     if(len(examen_alumno_promedios) == 0):
         examen_alumno_promedios = AlumnoMateriaPromedios.objects.create(alumno=alumno, materia=materia, primero=0, segundo=0, tercero=0)
-    return examen_alumno_promedios.segundo
+        return examen_alumno_promedios.segundo
+    else:
+        return examen_alumno_promedios[0].segundo
 
 @register.filter
 def prom_tercer_trimestre(alumno, materia):
     examen_alumno_promedios = AlumnoMateriaPromedios.objects.filter(alumno=alumno, materia=materia)
     if(len(examen_alumno_promedios) == 0):
         examen_alumno_promedios = AlumnoMateriaPromedios.objects.create(alumno=alumno, materia=materia, primero=0, segundo=0, tercero=0)
-    return examen_alumno_promedios.tercero
+        return examen_alumno_promedios.tercero
+    else:
+        return examen_alumno_promedios[0].tercero
 
 @register.filter
 def prom_anual(alumno, materia):

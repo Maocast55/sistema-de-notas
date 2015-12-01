@@ -471,10 +471,11 @@ class ExamenesAlumnoView(View):
 
                 # Persisto las notas trimestrales del alumno, para no calcularlas luego.
 
-                examen_alumno_promedios = AlumnoMateriaPromedios.objects.get(alumno=examen_alumno.alumno, materia=examen_alumno.examen.materia)
-                if(not examen_alumno_promedios):
+                examen_alumno_promedios = AlumnoMateriaPromedios.objects.filter(alumno=examen_alumno.alumno, materia=examen_alumno.examen.materia)
+                if(len(examen_alumno_promedios) == 0):
                     examen_alumno_promedios = AlumnoMateriaPromedios.objects.create(alumno=examen_alumno.alumno, materia=examen_alumno.examen.materia, primero=0, segundo=0, tercero=0)
-
+                else:
+                    examen_alumno_promedios = examen_alumno_promedios[0]
                 examenes = get_examenes_del_alumno_en_materia_de_trimestre(examen_alumno.alumno, 1, examen_alumno.examen.materia)
                 examen_alumno_promedios.primero = promedio_alumno(examen_alumno.alumno, examenes)
 

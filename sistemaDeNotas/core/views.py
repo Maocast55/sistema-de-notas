@@ -323,7 +323,6 @@ class AnualView(View):
         inscripciones = filter(lambda i : i.fecha_baja == None or i.fecha_baja> datetime.datetime.now().date(), inscripciones)
         alumnos = map(lambda a : a.alumno, inscripciones)
         alumnos = sorted(alumnos, key=lambda a : str.lower(str(a.apellido)))
-        import pdb;pdb.set_trace()
         return render(request, 'anual.html', {'materia': materia, 'alumnos':alumnos})
 
 class ExamenBorrarView(View):

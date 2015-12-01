@@ -48,7 +48,7 @@ def prom_tercer_trimestre(alumno, materia):
 
 @register.filter
 def prom_anual(alumno, materia):
-    return round((prom_primer_trimestre(alumno, materia) + prom_segundo_trimestre(alumno, materia) + prom_tercer_trimestre(alumno, materia)) / 3, 2)
+    return round((prom_primer_trimestre(alumno, materia) + prom_segundo_trimestre(alumno, materia) + prom_tercer_trimestre(alumno, materia)) / float(3), 2)
 
 def get_examenes_del_alumno_en_materia_de_trimestre(alumno,trimestre,materia):
     # obtengo las inscripciones para la seccion a la que pertenece la materia

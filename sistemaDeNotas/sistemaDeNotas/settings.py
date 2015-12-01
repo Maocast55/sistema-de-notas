@@ -24,7 +24,7 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['http://138.36.238.203/']
 
 TEMPLATE_DIRS = (BASE_DIR + '/templates', )
 

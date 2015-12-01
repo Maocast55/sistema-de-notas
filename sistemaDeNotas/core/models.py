@@ -99,6 +99,9 @@ class Examen(models.Model):
         verbose_name_plural = 'Exámenes'
 
 class Alumno(models.Model):
+    primero = models.IntegerField()
+    segundo = models.IntegerField()
+    tercero = models.IntegerField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     primer_nombre = models.CharField(max_length=64, verbose_name='Primer nombre')

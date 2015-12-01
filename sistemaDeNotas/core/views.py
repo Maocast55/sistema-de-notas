@@ -20,6 +20,44 @@ import datetime
 from django.template.defaulttags import register
 
 @register.filter
+def prom_primer_trimestre(alumno, materia):
+    if alumno.primero == None:
+        examenes = get_examenes_del_alumno_en_materia_de_trimestre(alumno, 1, materia)
+        alumno.primero = promedio_alumno(alumno, examenes)
+        alumno.save()
+    return alumno.primero
+
+@register.filter
+def prom_segundo_trimestre(alumno, materia):
+    if alumno.segundo == None:
+        examenes = get_examenes_del_alumno_en_materia_de_trimestre(alumno, 2, materia)
+        alumno.segundo = promedio_alumno(alumno, examenes)
+        alumno.save()
+    return alumno.segundo
+
+@register.filter
+def prom_tercer_trimestre(alumno, materia):
+    if alumno.tercero == None:
+        examenes = get_examenes_del_alumno_en_materia_de_trimestre(alumno, 3, materia)
+        alumno.tercero = promedio_alumno(alumno, examenes)
+        alumno.save()
+    return alumno.tercero
+
+@register.filter
+def prom_anual(alumno, materia):
+    return round((prom_primer_trimestre(alumno, materia) + prom_segundo_trimestre(alumno, materia) + prom_tercer_trimestre(alumno, materia)) / 3, 2)
+
+def get_examenes_del_alumno_en_materia_de_trimestre(alumno,trimestre,materia):
+    # obtengo las inscripciones para la seccion a la que pertenece la materia
+    inscripciones = Inscripcion.objects.filter(seccion=materia.seccion)
+    inscripciones = filter(lambda i : i.fecha_baja == None or i.fecha_baja> datetime.datetime.now().date(), inscripciones)
+    alumnos = map(lambda a : a.alumno, inscripciones)
+    alumnos = sorted(alumnos, key=lambda a : str.lower(str(a.apellido)))
+    dict_examenes = get_dict_examenes(materia, trimestre)
+    return dict_examenes
+
+
+@register.filter
 def esPar(numero):
     return numero % 2 == 0
 
@@ -261,6 +299,17 @@ def es_trimestre_editable(trimestre):
 
 # ----------- fin funciones helpers -------------
 
+class AnualView(View):
+
+    def get(self, request, *args, **kwargs):
+        materia = Materia.objects.get(pk=kwargs['materia_pk'])
+        # obtengo las inscripciones para la seccion a la que pertenece la materia
+        inscripciones = Inscripcion.objects.filter(seccion=materia.seccion)
+        inscripciones = filter(lambda i : i.fecha_baja == None or i.fecha_baja> datetime.datetime.now().date(), inscripciones)
+        alumnos = map(lambda a : a.alumno, inscripciones)
+        alumnos = sorted(alumnos, key=lambda a : str.lower(str(a.apellido)))
+        return render(request, 'anual.html', {'materia': materia, 'alumnos':alumnos})
+
 class ExamenBorrarView(View):
 
     def post(self, request):
@@ -414,6 +463,19 @@ class ExamenesAlumnoView(View):
                     examen_alumno.nota = None
                 else:
                     examen_alumno.nota = nota
+
+                # Persisto las notas trimestrales del alumno, para no calcularlas luego.
+                examenes = get_examenes_del_alumno_en_materia_de_trimestre(examen_alumno.alumno, 1, examen_alumno.examen.materia)
+                examen_alumno.alumno.primero = promedio_alumno(examen_alumno.alumno, examenes)
+
+                examenes = get_examenes_del_alumno_en_materia_de_trimestre(examen_alumno.alumno, 2, examen_alumno.examen.materia)
+                examen_alumno.alumno.segundo = promedio_alumno(examen_alumno.alumno, examenes)
+
+                examenes = get_examenes_del_alumno_en_materia_de_trimestre(examen_alumno.alumno, 3, examen_alumno.examen.materia)
+                examen_alumno.alumno.tercero = promedio_alumno(examen_alumno.alumno, examenes)
+
+                examen_alumno.alumno.save()
+
                 examen_alumno.save()
         return redirect('login')
 

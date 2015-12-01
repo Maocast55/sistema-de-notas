@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from core.views import ImprimirBoletinesView, ExportarCursoView, ExamenBorrarView, ExamenNuevoView, ExamenesAlumnoView, LoginView, DocenteResetPasswordView, DocenteMateriasView, Dudas_profesorView, LogOutView,Dudas_administradorView, Preguntas_frecuentesView, DocenteChangePasswordView, ManualView, Dudas_profesorView, CursosView, EstadisticasView
+from core.views import AnualView, ImprimirBoletinesView, ExportarCursoView, ExamenBorrarView, ExamenNuevoView, ExamenesAlumnoView, LoginView, DocenteResetPasswordView, DocenteMateriasView, Dudas_profesorView, LogOutView,Dudas_administradorView, Preguntas_frecuentesView, DocenteChangePasswordView, ManualView, Dudas_profesorView, CursosView, EstadisticasView
 
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
@@ -16,11 +16,9 @@ urlpatterns = patterns('',
     url(r'^dudas_administrador', Dudas_administradorView.as_view(), name='dudas_administrador'),
     url(r'^preguntas_frecuentes', Preguntas_frecuentesView.as_view(), name='preguntas_frecuentes'),
     url(r'^examenes_alumno', ExamenesAlumnoView.as_view(), name='examenes_alumno'),
-
     url(r'^examen/nuevo', ExamenNuevoView.as_view(), name='examen_nuevo'),
     url(r'^examen/borrar', ExamenBorrarView.as_view(), name='examen_borrar'),
-
     url(r'^exportar/curso', ExportarCursoView.as_view(), name='exportar_curso'),
-
     url(r'^imprimir/boletines', ImprimirBoletinesView.as_view(), name='imprimir_boletines'),
+    url(r'^anual/(?P<materia_pk>\w+)', AnualView.as_view(), name='imprimir_boletines'),
 )

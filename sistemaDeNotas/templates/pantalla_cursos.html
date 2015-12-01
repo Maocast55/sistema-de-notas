@@ -75,11 +75,12 @@
       <li><a href="/cursos/{{materia.pk}}/1">Primer Trimestre</a></li>
       <li><a href="/cursos/{{materia.pk}}/2">Segundo Trimestre</a></li>
       <li><a href="/cursos/{{materia.pk}}/3">Tercer Trimestre</a></li>
+        <li><a href="/anual/{{materia.pk}}">Trimestres y ANUAL</a></li>
       <li> <a class="dropdown-toggle" data-toggle="dropdown" href="#">
           Opciones <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
-           <li><a href="#" onclick="submitForms()"><span class="text-success">Guardar y volver</span></a></li>
+           <li><a href="#" onclick="submitForms()" data-toggle="modal" data-target="#modalProgreso"><span class="text-success">Guardar y volver</span></a></li>
            <li><a href="/"><span class="text-danger">Volver sin guardar</span></a></li>
            <li>
                {% if examenes|length > 0 %}
@@ -251,6 +252,27 @@
         <button type="submit" class="btn btn-default">Guardar</button>
     </div>
       </form>
+  </div>
+
+</div>
+</div>
+
+
+<!-- Modal Progreso -->
+<div class="modal fade" id="modalProgreso" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4 class="modal-title">Guardando notas</h4>
+    </div>
+    <div class="modal-body">
+        <div class="alert alert-warning" role="alert">
+            Guardando notas, espere por favor hasta que aparezca la pantalla de CURSOS nuevamente.<br><br>
+            En este momento se están guardando las notas y se están calculando los promedios trimestrales y anuales.
+        </div>
   </div>
 
 </div>

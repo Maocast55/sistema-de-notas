@@ -304,6 +304,7 @@ def es_trimestre_editable(trimestre):
 
 class AnualView(View):
 
+    @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
         materia = Materia.objects.get(pk=kwargs['materia_pk'])
         # obtengo las inscripciones para la seccion a la que pertenece la materia
@@ -315,6 +316,7 @@ class AnualView(View):
 
 class ExamenBorrarView(View):
 
+    @method_decorator(login_required)
     def post(self, request):
         examen = Examen.objects.get(pk=request.POST['examen_pk'])
         examen.delete()
@@ -322,6 +324,7 @@ class ExamenBorrarView(View):
 
 class ExamenNuevoView(View):
 
+    @method_decorator(login_required)
     def post(self, request):
         materia_pk = request.POST['materia']
         trimestre = request.POST['trimestre']
@@ -428,6 +431,8 @@ class LogOutView(View):
 
 
 class CursosView(View):
+
+    @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
 
         trimestre = kwargs['trimestre']
@@ -455,6 +460,8 @@ class CursosView(View):
                                                         })
 
 class ExamenesAlumnoView(View):
+
+    @method_decorator(login_required)
     def post(self, request):
         import thread
         examenes_alumno = request.POST['examenes_alumno'].split(',')
@@ -510,10 +517,12 @@ def get_institucion_name():
 
 class ImprimirBoletinesView(View):
 
+    @method_decorator(login_required)
     def get(self, request):
         secciones = Seccion.objects.all()
         return render(request, 'imprimir_boletines.html', {'secciones':secciones})
 
+    @method_decorator(login_required)
     def post(self, request):
         year = datetime.datetime.now().date().year
         trimestre = 1
@@ -565,6 +574,7 @@ def get_promedio_de_trimestre(alumno, materia, trimestre):
 
 class ExportarCursoView(View):
 
+    @method_decorator(login_required)
     def post(self, request):
         file = exportar_curso(request.POST['materia'], request.POST['trimestre'])
         file = open(file.name,"r")

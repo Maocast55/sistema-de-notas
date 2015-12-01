@@ -29,6 +29,16 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
+            name='AlumnoMateriaPromedios',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('primero', models.IntegerField()),
+                ('segundo', models.IntegerField()),
+                ('tercero', models.IntegerField()),
+                ('alumno', models.ForeignKey(to='core.Alumno')),
+            ],
+        ),
+        migrations.CreateModel(
             name='Examen',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -183,5 +193,10 @@ class Migration(migrations.Migration):
             model_name='examen',
             name='materia',
             field=models.ForeignKey(verbose_name=b'Materia', to='core.Materia'),
+        ),
+        migrations.AddField(
+            model_name='alumnomateriapromedios',
+            name='materia',
+            field=models.ForeignKey(to='core.Materia'),
         ),
     ]

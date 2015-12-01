@@ -98,10 +98,8 @@ class Examen(models.Model):
         verbose_name = 'Examen'
         verbose_name_plural = 'Exámenes'
 
+
 class Alumno(models.Model):
-    primero = models.IntegerField()
-    segundo = models.IntegerField()
-    tercero = models.IntegerField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     primer_nombre = models.CharField(max_length=64, verbose_name='Primer nombre')
@@ -115,6 +113,13 @@ class Alumno(models.Model):
     class Meta:
         verbose_name = 'Alumno'
         verbose_name_plural = 'Alumnos'
+
+class AlumnoMateriaPromedios(models.Model):
+    primero = models.IntegerField()
+    segundo = models.IntegerField()
+    tercero = models.IntegerField()
+    alumno = models.ForeignKey(Alumno)
+    materia = models.ForeignKey(Materia)
 
 
 class ExamenAlumno(models.Model):

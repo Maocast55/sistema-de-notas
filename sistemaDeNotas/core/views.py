@@ -24,11 +24,16 @@ def esPar(numero):
     return numero % 2 == 0
 
 @register.filter
+def ordenarPorFecha(examenes):
+    return sorted(map(lambda e : e, examenes), key=lambda e : e.fecha)
+
+
+@register.filter
 def get_notas_de(examenes, alumno):
     notas = []
     for examen, alumnos in examenes.iteritems():
         notas.append(alumnos[alumno])
-    return notas
+    return sorted(notas, key=lambda e : e.examen.fecha)
 
 
 @register.filter

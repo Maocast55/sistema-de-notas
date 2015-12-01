@@ -104,7 +104,7 @@
                 <tr style="font-weight:bold;">
                     <td rowspan="2" class="header-tabla" >Apellido</td>
                     <td rowspan="2" class="header-tabla" >Nombre</td>
-                    {% for examen, alumnos in examenes.items %}
+                    {% for examen in examenes|ordenarPorFecha %}
                         <td rowspan="2" class="header-tabla">
                             {% if examen.es_integrador %}
                                 {{examen.nombre}} <br><span style="color:blue;">(Integrador)</span>

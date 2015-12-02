@@ -464,29 +464,31 @@ class ExamenesAlumnoView(View):
 
     @method_decorator(login_required)
     def post(self, request):
-        examenes_alumno = request.POST['examenes_alumno'].split(',')
-        notas = request.POST['notas'].split(',')
-        if(not (len(examenes_alumno) == 1 and examenes_alumno[0] == u'')): # esto pasa cuando no hay examenes cargados
-            alumnos = []
-            for index, examen_pk in enumerate(examenes_alumno):
-                examen_alumno = ExamenAlumno.objects.get(pk=examen_pk)
-                materia = examen_alumno.examen.materia
-                nota = notas[index]
-                if nota == '' or nota == ' ' or nota == '  ' or int(nota) < 0 or int(nota) > 10:
-                    examen_alumno.nota = None
-                else:
-                    examen_alumno.nota = nota
-                if(not examen_alumno.alumno in alumnos):
-                    alumnos.append(examen_alumno.alumno)
-                trimestre = examen_alumno.examen.trimestre
-                examen_alumno.save()
-
-            for alumno in list(set(alumnos)):
-                 actualizar_promedios(alumno, materia, trimestre)
-
-                # Persisto las notas trimestrales del alumno, para no calcularlas luego.
-
+        import thread
+        thread.start_new_thread(guardar_notas, (request,1))
         return redirect('login')
+
+def guardar_notas(request, sleep):
+    examenes_alumno = request.POST['examenes_alumno'].split(',')
+    notas = request.POST['notas'].split(',')
+    if(not (len(examenes_alumno) == 1 and examenes_alumno[0] == u'')): # esto pasa cuando no hay examenes cargados
+        alumnos = []
+        for index, examen_pk in enumerate(examenes_alumno):
+            examen_alumno = ExamenAlumno.objects.get(pk=examen_pk)
+            materia = examen_alumno.examen.materia
+            nota = notas[index]
+            if nota == '' or nota == ' ' or nota == '  ' or int(nota) < 0 or int(nota) > 10:
+                examen_alumno.nota = None
+            else:
+                examen_alumno.nota = nota
+            if(not examen_alumno.alumno in alumnos):
+                alumnos.append(examen_alumno.alumno)
+            trimestre = examen_alumno.examen.trimestre
+            examen_alumno.save()
+        for alumno in list(set(alumnos)):
+             actualizar_promedios(alumno, materia, trimestre)
+
+            # Persisto las notas trimestrales del alumno, para no calcularlas luego.
 
 def actualizar_promedios(alumno, materia, trimestre):
     """

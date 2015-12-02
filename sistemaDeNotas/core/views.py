@@ -481,7 +481,7 @@ class ExamenesAlumnoView(View):
 
                 examen_alumno.save()
 
-            for alumno in alumnos:
+            for alumno in list(set(alumnos)):
                  actualizar_promedios(alumno, materia)
 
                 # Persisto las notas trimestrales del alumno, para no calcularlas luego.

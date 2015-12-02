@@ -52,12 +52,13 @@ def prom_anual(alumno, materia):
 
 def get_examenes_del_alumno_en_materia_de_trimestre(alumno,trimestre,materia):
     # obtengo las inscripciones para la seccion a la que pertenece la materia
+    """
     inscripciones = Inscripcion.objects.filter(seccion=materia.seccion)
     inscripciones = filter(lambda i : i.fecha_baja == None or i.fecha_baja> datetime.datetime.now().date(), inscripciones)
     alumnos = map(lambda a : a.alumno, inscripciones)
     alumnos = sorted(alumnos, key=lambda a : str.lower(str(a.apellido)))
-    dict_examenes = get_dict_examenes(materia, trimestre)
-    return dict_examenes
+    """
+    return get_dict_examenes(materia, trimestre)
 
 
 @register.filter
@@ -463,7 +464,6 @@ class ExamenesAlumnoView(View):
 
     @method_decorator(login_required)
     def post(self, request):
-        import thread
         examenes_alumno = request.POST['examenes_alumno'].split(',')
         notas = request.POST['notas'].split(',')
         if(not (len(examenes_alumno) == 1 and examenes_alumno[0] == u'')): # esto pasa cuando no hay examenes cargados
@@ -478,30 +478,34 @@ class ExamenesAlumnoView(View):
                     examen_alumno.nota = nota
                 if(not examen_alumno.alumno in alumnos):
                     alumnos.append(examen_alumno.alumno)
-
+                trimestre = examen_alumno.examen.trimestre
                 examen_alumno.save()
 
             for alumno in list(set(alumnos)):
-                 actualizar_promedios(alumno, materia)
+                 actualizar_promedios(alumno, materia, trimestre)
 
                 # Persisto las notas trimestrales del alumno, para no calcularlas luego.
 
         return redirect('login')
 
-def actualizar_promedios(alumno, materia):
+def actualizar_promedios(alumno, materia, trimestre):
+    """
     examen_alumno_promedios = AlumnoMateriaPromedios.objects.filter(alumno=alumno, materia=materia)
     if(len(examen_alumno_promedios) == 0):
         examen_alumno_promedios = AlumnoMateriaPromedios.objects.create(alumno=alumno, materia=materia, primero=0, segundo=0, tercero=0)
     else:
         examen_alumno_promedios = examen_alumno_promedios[0]
-    examenes = get_examenes_del_alumno_en_materia_de_trimestre(alumno, 1, materia)
-    examen_alumno_promedios.primero = promedio_alumno(alumno, examenes)
-
-    examenes = get_examenes_del_alumno_en_materia_de_trimestre(alumno, 2, materia)
-    examen_alumno_promedios.segundo = promedio_alumno(alumno, examenes)
-
-    examenes = get_examenes_del_alumno_en_materia_de_trimestre(alumno, 3, materia)
-    examen_alumno_promedios.tercero = promedio_alumno(alumno, examenes)
+    """
+    examen_alumno_promedios, created = AlumnoMateriaPromedios.objects.get_or_create(alumno=alumno, materia=materia)
+    if trimestre == 1:
+        examenes = get_examenes_del_alumno_en_materia_de_trimestre(alumno, 1, materia)
+        examen_alumno_promedios.primero = promedio_alumno(alumno, examenes)
+    elif trimestre == 2:
+        examenes = get_examenes_del_alumno_en_materia_de_trimestre(alumno, 2, materia)
+        examen_alumno_promedios.segundo = promedio_alumno(alumno, examenes)
+    elif trimestre == 3:
+        examenes = get_examenes_del_alumno_en_materia_de_trimestre(alumno, 3, materia)
+        examen_alumno_promedios.tercero = promedio_alumno(alumno, examenes)
     examen_alumno_promedios.save()
 
 # Recibe una lista, si ésta contiene un elemento lo retorna, de lo contrario crea un nuevo examen_alumno con los datos que recibe.

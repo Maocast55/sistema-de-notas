@@ -115,9 +115,9 @@ class Alumno(models.Model):
         verbose_name_plural = 'Alumnos'
 
 class AlumnoMateriaPromedios(models.Model):
-    primero = models.IntegerField()
-    segundo = models.IntegerField()
-    tercero = models.IntegerField()
+    primero = models.IntegerField(default=0)
+    segundo = models.IntegerField(default=0)
+    tercero = models.IntegerField(default=0)
     alumno = models.ForeignKey(Alumno)
     materia = models.ForeignKey(Materia)
 

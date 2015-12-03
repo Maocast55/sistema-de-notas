@@ -443,8 +443,8 @@ class CursosView(View):
         materia = Materia.objects.filter(pk=kwargs['materia_pk'])[0]
 
         # Que el trimestre sea editable depende de la fecha actual.
-        editable = es_trimestre_editable(trimestre)
-
+        #editable = es_trimestre_editable(trimestre)
+        editable = True
         # obtengo las inscripciones para la seccion a la que pertenece la materia
         inscripciones = Inscripcion.objects.filter(seccion=materia.seccion)
         inscripciones = filter(lambda i : i.fecha_baja == None or i.fecha_baja> datetime.datetime.now().date(), inscripciones)

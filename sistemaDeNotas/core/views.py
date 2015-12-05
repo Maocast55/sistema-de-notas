@@ -307,7 +307,7 @@ def es_trimestre_editable(trimestre):
 
 class AnualView(View):
 
-    #@method_decorator(login_required)
+    @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
         materia = Materia.objects.get(pk=kwargs['materia_pk'])
         # obtengo las inscripciones para la seccion a la que pertenece la materia
@@ -319,7 +319,7 @@ class AnualView(View):
 
 class ExamenBorrarView(View):
 
-    #@method_decorator(login_required)
+    @method_decorator(login_required)
     def post(self, request):
         examen = Examen.objects.get(pk=request.POST['examen_pk'])
         examen.delete()
@@ -327,7 +327,7 @@ class ExamenBorrarView(View):
 
 class ExamenNuevoView(View):
 
-    #@method_decorator(login_required)
+    @method_decorator(login_required)
     def post(self, request):
         materia_pk = request.POST['materia']
         trimestre = request.POST['trimestre']
@@ -396,12 +396,12 @@ class LoginView(View):
 
 class DocenteChangePasswordView(View):
 
-    #@method_decorator(login_required)
+    @method_decorator(login_required)
     def get(self, request):
         form = ChangePasswordForm()
         return render(request, 'change_password.html', {'form': form})
 
-    #@method_decorator(login_required)
+    @method_decorator(login_required)
     def post(self, request):
         form = ChangePasswordForm(request.POST)
         if form.is_valid():
@@ -420,14 +420,14 @@ class DocenteResetPasswordView(View):
 
 class DocenteMateriasView(View):
 
-    #@method_decorator(login_required)
+    @method_decorator(login_required)
     def get(self, request):
         materias = Materia.objects.filter(usuarios__id=request.user.id)
         return render(request, 'materias.html', {'nombre_institucion': get_institucion_name(), 'user': request.user, 'materias': materias})
 
 class LogOutView(View):
 
-    #@method_decorator(login_required)
+    @method_decorator(login_required)
     def get(self, request):
         logout(request)
         return redirect('login')
@@ -435,7 +435,7 @@ class LogOutView(View):
 
 class CursosView(View):
 
-    #@method_decorator(login_required)
+    @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
 
         trimestre = kwargs['trimestre']
@@ -464,7 +464,7 @@ class CursosView(View):
 
 class ExamenesAlumnoView(View):
 
-    #@method_decorator(login_required)
+    @method_decorator(login_required)
     def post(self, request):
         import thread
         thread.start_new_thread(guardar_notas, (request,1))
@@ -530,12 +530,12 @@ def get_institucion_name():
 
 class ImprimirBoletinesView(View):
 
-    #@method_decorator(login_required)
+    @method_decorator(login_required)
     def get(self, request):
         secciones = Seccion.objects.all()
         return render(request, 'imprimir_boletines.html', {'secciones':secciones})
 
-    #@method_decorator(login_required)
+    @method_decorator(login_required)
     def post(self, request):
         year = datetime.datetime.now().date().year
         trimestre = 1
@@ -587,7 +587,7 @@ def get_promedio_de_trimestre(alumno, materia, trimestre):
 
 class ExportarCursoView(View):
 
-    #@method_decorator(login_required)
+    @method_decorator(login_required)
     def post(self, request):
         file = exportar_curso(request.POST['materia'], request.POST['trimestre'])
         file = open(file.name,"r")

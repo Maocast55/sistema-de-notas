@@ -20,6 +20,23 @@ import datetime
 from django.template.defaulttags import register
 
 @register.filter
+def seccion_para_imprimir(seccion):
+    materias = Materia.objects.filter(seccion=seccion)
+    res = True
+    for materia in materias:
+            res = res and materia_para_imprimir(materia)
+    return res
+
+@register.filter
+def materia_para_imprimir(materia):
+    trimestres = [1, 2, 3]
+    res = True
+    for trimestre in trimestres:
+        res = res and materia_correcta_en_trimestre(materia, trimestre)
+    return res
+
+
+@register.filter
 def prom_primer_trimestre(alumno, materia):
     examen_alumno_promedios = AlumnoMateriaPromedios.objects.filter(alumno=alumno, materia=materia)
     if(len(examen_alumno_promedios) == 0):
@@ -304,6 +321,13 @@ def es_trimestre_editable(trimestre):
     return trimestres[int(trimestre)-1]
 
 # ----------- fin funciones helpers -------------
+
+class VerDetalleView(View):
+
+    @method_decorator(login_required)
+    def get(self, request, *args, **kwargs):
+        materias = Materia.objects.filter(seccion__pk=kwargs['seccion_pk'])
+        return render(request, 'detalle.html', {'materias': materias, 'seccion': Seccion.objects.get(pk=kwargs['seccion_pk'])})
 
 class AnualView(View):
 

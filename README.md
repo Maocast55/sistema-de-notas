@@ -1,6 +1,22 @@
-# Sistema de Notas (Develop)
+# Sistema de Calificaciones y Notas
 -----------------
-Este software esta diseñado para ser usado en instituciones académicas, en principio colegios secundarios. Su objetivo es favorecer el cálculo de notas trimestrales, anuales y mesas de examen de los alumnos, proveyendo también una intuitiva carga de las mismas para ser usada por los docentes.
+Este software fue desarrollado por docentes y alumnos del Colegio Florentino Ameghino en el año 2015 bajo el proyecto PROCODAS. 
+El mismo tiene como objetivo facilitar la carga de notas de los docentes.
+
+Cuenta con:
+
+* Módulo de administración
+  * ABM Docentes
+  * ABM Alumnos
+  * ABM Materias
+  * Inscripción de alumnos a materias
+  
+* Módulo de preguntas/tutorial
+  * ABM de preguntas y respuestas
+  
+* Impresión de boletines
+  (en desarrollo)
+
 
 Desarrolladores
 ---------------
@@ -27,7 +43,7 @@ Tecnologías utilizadas
 Versiones disponibles
 ----------------------
 
-* Aún sin versiones disponibles
+* La versión final del software se encuentra en el branch Master.
 
 
-==> Para visualizar el desarrollo de la aplicación pueden entrar a https://trello.com/b/WId9jdzT/notas-2015
+

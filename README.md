@@ -44,6 +44,6 @@ Versiones disponibles
 ----------------------
 
 * La versión final del software se encuentra en el branch Master.
-
+* El software fue desarrollado hasta Diciembre de 2015.
 
 

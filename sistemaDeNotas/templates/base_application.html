@@ -41,7 +41,7 @@
                 <img src="{{STATIC_URL}}/images/avatar.jpg" width=25 , hight=25 class="profile-image img-circle"> Hola {{user.first_name}} ! <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     {% if user.is_superuser %}
-                        <li><a href="/imprimir/boletines" class="btn btn-success"></i> Imprimir boletines</a></li>
+                        <li><a href="/imprimir/boletines" class="btn btn-success"></i> Ver progreso</a></li>
                     <form id="imprimir_boletines" action="/imprimir/boletines" method="post">
                        {% csrf_token %}
                     </form>

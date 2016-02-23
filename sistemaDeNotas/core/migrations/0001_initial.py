@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
                 ('primer_nombre', models.CharField(max_length=64, verbose_name=b'Primer nombre')),
-                ('segundo_nombre', models.CharField(default=b'', max_length=64, verbose_name=b'Segundo nombre')),
+                ('segundo_nombre', models.CharField(max_length=64, null=True, verbose_name=b'Segundo nombre', blank=True)),
                 ('apellido', models.CharField(max_length=64, verbose_name=b'Apellido')),
                 ('dni', models.CharField(max_length=64, verbose_name=b'dni')),
             ],
@@ -29,6 +29,16 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
+            name='AlumnoMateriaPromedios',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('primero', models.IntegerField()),
+                ('segundo', models.IntegerField()),
+                ('tercero', models.IntegerField()),
+                ('alumno', models.ForeignKey(to='core.Alumno')),
+            ],
+        ),
+        migrations.CreateModel(
             name='Examen',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -36,7 +46,9 @@ class Migration(migrations.Migration):
                 ('updated', models.DateTimeField(auto_now=True)),
                 ('nombre', models.CharField(max_length=64, verbose_name=b'Nombre')),
                 ('fecha', models.DateField()),
-                ('observacion', models.TextField(max_length=512)),
+                ('observacion', models.TextField(max_length=512, null=True, blank=True)),
+                ('trimestre', models.IntegerField()),
+                ('es_integrador', models.BooleanField(default=False)),
             ],
             options={
                 'verbose_name': 'Examen',
@@ -44,16 +56,18 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='GrupoExamen',
+            name='ExamenAlumno',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('nombre', models.CharField(max_length=64, verbose_name=b'Nombre')),
+                ('nota', models.IntegerField(null=True, verbose_name=b'Nota')),
+                ('alumno', models.ForeignKey(verbose_name=b'Alumno', to='core.Alumno')),
+                ('examen', models.ForeignKey(verbose_name=b'Examen', to='core.Examen')),
             ],
             options={
-                'verbose_name': 'Grupo de examen',
-                'verbose_name_plural': 'Grupos de examen',
+                'verbose_name': 'Nota de alumno',
+                'verbose_name_plural': 'Nota de alumno',
             },
         ),
         migrations.CreateModel(
@@ -79,7 +93,15 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
                 ('nombre', models.CharField(max_length=64, verbose_name=b'Nombre de la instituci\xc3\xb3n')),
+                ('inicio_de_clases', models.DateField(verbose_name=b'Fecha de inicio de clases')),
+                ('primer_trimestre', models.DateField(verbose_name=b'Fecha de cierre de notas del primer trimestre')),
+                ('segundo_trimestre', models.DateField(verbose_name=b'Fecha de cierre de notas del segundo trimestre')),
+                ('tercer_trimestre', models.DateField(verbose_name=b'Fecha de cierre de notas del tercer trimestre')),
             ],
+            options={
+                'verbose_name': 'Instituci\xf3n',
+                'verbose_name_plural': 'Instituci\xf3n',
+            },
         ),
         migrations.CreateModel(
             name='Materia',
@@ -95,6 +117,48 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
+            name='Preguntas_Administrador',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created', models.DateTimeField(auto_now_add=True)),
+                ('updated', models.DateTimeField(auto_now=True)),
+                ('titulo', models.CharField(max_length=b'255')),
+                ('respuesta', models.TextField(max_length=b'4096')),
+            ],
+            options={
+                'verbose_name': 'Pregunta_Administrador',
+                'verbose_name_plural': 'Preguntas_Administradores',
+            },
+        ),
+        migrations.CreateModel(
+            name='Preguntas_Frecuentes',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created', models.DateTimeField(auto_now_add=True)),
+                ('updated', models.DateTimeField(auto_now=True)),
+                ('titulo', models.CharField(max_length=b'255')),
+                ('respuesta', models.TextField(max_length=b'4096')),
+            ],
+            options={
+                'verbose_name': 'Pregunta_Frecuente',
+                'verbose_name_plural': 'Preguntas_Frecuentes',
+            },
+        ),
+        migrations.CreateModel(
+            name='Preguntas_Profesor',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created', models.DateTimeField(auto_now_add=True)),
+                ('updated', models.DateTimeField(auto_now=True)),
+                ('titulo', models.CharField(max_length=b'255')),
+                ('respuesta', models.TextField(max_length=b'4096')),
+            ],
+            options={
+                'verbose_name': 'Pregunta_Profesor',
+                'verbose_name_plural': 'Preguntas_Profesores',
+            },
+        ),
+        migrations.CreateModel(
             name='Seccion',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -103,26 +167,11 @@ class Migration(migrations.Migration):
                 ('anio', models.PositiveSmallIntegerField(verbose_name=b'A\xc3\xb1o')),
                 ('cursada', models.CharField(max_length=64, verbose_name=b'Cursada')),
                 ('grupo', models.CharField(max_length=64, null=True, verbose_name=b'Grupo', blank=True)),
+                ('anio_calendario', models.IntegerField(verbose_name=b'A\xc3\xb1o calendario')),
             ],
             options={
                 'verbose_name': 'Secci\xf3n',
                 'verbose_name_plural': 'Secciones',
-            },
-        ),
-        migrations.CreateModel(
-            name='TipoExamen',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('codigo', models.CharField(max_length=64, verbose_name=b'C\xc3\xb3digo')),
-                ('descripcion', models.TextField(max_length=128, verbose_name=b'Descripci\xc3\xb3n')),
-                ('nivel', models.PositiveSmallIntegerField(verbose_name=b'Nivel')),
-                ('grupo_examen', models.ForeignKey(verbose_name=b'Grupo examen', to='core.GrupoExamen')),
-            ],
-            options={
-                'verbose_name': 'Tipo de examen',
-                'verbose_name_plural': 'Tipos de examen',
             },
         ),
         migrations.AddField(
@@ -142,12 +191,12 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='examen',
-            name='grupo_examen',
-            field=models.ForeignKey(verbose_name=b'Grupo examen', to='core.GrupoExamen'),
-        ),
-        migrations.AddField(
-            model_name='examen',
             name='materia',
             field=models.ForeignKey(verbose_name=b'Materia', to='core.Materia'),
+        ),
+        migrations.AddField(
+            model_name='alumnomateriapromedios',
+            name='materia',
+            field=models.ForeignKey(to='core.Materia'),
         ),
     ]

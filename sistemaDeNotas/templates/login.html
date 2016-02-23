@@ -8,11 +8,23 @@
                 {% bootstrap_form_errors form %}
                 <div id="form-signin-heading">Iniciar sesión</div>
                 <label>Ingrese su nombre de usuario</label>
-                <input type="text" class="form-control" name="username" placeholder="ej: juancarlos" required=""/><br>
+                <input type="text" class="form-control" name="username" placeholder="ej: juancarlos" required="" maxlength="20"/><br>
                 <label>Ingrese su contraseña</label>
-                <input type="password" class="form-control" name="password" placeholder="ej: *******" required=""/><br>
-              <button class="btn btn-lg btn-success btn-block" type="submit">Iniciar sesión</button><br>
-                <p><a class="pull-right" href="{% url 'reset_password' %}">Olvidé mi contraseña</a></p>
+                <input type="password" class="form-control" name="password" placeholder="ej: *******" required="" maxlength="20"/><br>
+                <div class="row">
+                    <button class="btn btn-lg btn-success btn-block" type="submit">Iniciar sesión</button><br>
+                </div>
+                <div class="row">
+                    <a href="/reset_password" class="btn btn-info">Olvide mi contraseña</a>
+                    <a href="manual"> <button type="button" style="margin-left: 70px" class="btn btn-info">Manual</button> </a>
+                </div>
             </form>
+
+                <div class="chicoConsulta hidden-xs" class="col-md-8">
+                    <img src="{{STATIC_URL}}images/consulta2.png" width=230px height="230px">
+                </div>
         </div>
 {% endblock %}
+
+
+ 

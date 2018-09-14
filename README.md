@@ -30,6 +30,8 @@ Desarrolladores
 * Conelly Leonardo
 * Basualdo Matias
 * Gattone Agustín
+* Juan Ignacio Yegro
+* Damián Gonzalía
 
 Tecnologías utilizadas
 ----------------------
